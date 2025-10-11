@@ -4,6 +4,6 @@ Simple educational engine written in C
 
 ## Build
 ```
-cmake .
-cmake --build .
+cmake -S . -B build
+cmake --build build
 ```
