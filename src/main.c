@@ -57,3 +57,36 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result)
 {
 }
 
+int main(int argc, char *argv[])
+{
+    (void)argc;
+    (void)argv;
+
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
+        return 1;
+    }
+
+    void *state = NULL;
+    SDL_AppResult result = SDL_AppInit(&state, argc, argv);
+    if (result != SDL_APP_CONTINUE) {
+        SDL_Quit();
+        return (result == SDL_APP_SUCCESS) ? 0 : 1;
+    }
+
+    SDL_Event e;
+    while (result == SDL_APP_CONTINUE) {
+        while (SDL_PollEvent(&e)) {
+            result = SDL_AppEvent(state, &e);
+            if (result != SDL_APP_CONTINUE)
+                break;
+        }
+
+        if (result == SDL_APP_CONTINUE)
+            result = SDL_AppIterate(state);
+    }
+
+    SDL_AppQuit(state, result);
+    SDL_Quit();
+    return (result == SDL_APP_SUCCESS) ? 0 : 1;
+}
