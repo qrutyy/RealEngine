@@ -123,5 +123,6 @@ Temporary Items
 *.icloud
 
 build/.cmake/
-
+build/
+.cache/
 # End of https://www.toptal.com/developers/gitignore/api/c,macos,linux,cmake
