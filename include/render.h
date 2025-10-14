@@ -1,5 +1,5 @@
-#ifndef RENDERER_H
-#define RENDERER_H
+#ifndef RENDER_H
+#define RENDER_H
 
 #include "app.h"
 #include <SDL3/SDL.h>
@@ -16,8 +16,8 @@
 #define OFFSET_X (WINDOW_WIDTH / 2)
 #define OFFSET_Y 0 
 
-void renderer_draw_grid(app_hlpr_t *app);
-void renderer_draw_player(app_hlpr_t *app); 
-void scene_render(app_hlpr_t *app);
+void render_draw_grid(app_hlpr_t *app);
+void render_draw_player(app_hlpr_t *app); 
+void render_scene(app_hlpr_t *app);
 
 #endif // RENDERER_H

@@ -1,7 +1,8 @@
-#include "renderer.h"
+#include "render.h"
 #include "app.h"
+#include <stdint.h>
 
-void renderer_draw_player(app_hlpr_t *app) {
+void render_draw_player(app_hlpr_t *app) {
     world_t *world = app->world;
     float zoom = world->cam_zoom;
     int cam_x = world->cam_pos.x;
@@ -23,7 +24,7 @@ void renderer_draw_player(app_hlpr_t *app) {
 
 
 // Draw grid (with zoom/camera offset adjustment)
-void renderer_draw_grid(app_hlpr_t *app) {
+void render_draw_grid(app_hlpr_t *app) {
     world_t *world = app->world;
     float zoom = world->cam_zoom; // TODO: fix zoom feature
     int cam_x = world->cam_pos.x;
@@ -48,12 +49,38 @@ void renderer_draw_grid(app_hlpr_t *app) {
     }
 }
 
-void scene_render(app_hlpr_t* app) {
+void render_fps_bar(app_hlpr_t *app, uint64_t now) {
+    static uint64_t last_update = 0;
+    static int frame_count = 0;
+    static int current_fps = 0;
+    char debug_string[32];
+    float prevScaleX, prevScaleY;
+
+    ++frame_count;
+    if (now - last_update > 1000000000) { // 1 second in nanoseconds
+        current_fps = frame_count;
+        frame_count = 0;
+        last_update = now;
+    }
+    // Make FPS display bigger and offset from the corner
+    
+    SDL_GetRenderScale(app->renderer, &prevScaleX, &prevScaleY);
+    SDL_SetRenderScale(app->renderer, 2.5f, 2.5f); 
+    SDL_snprintf(debug_string, sizeof(debug_string), "%d fps", current_fps);
+    SDL_RenderDebugText(app->renderer, 12, 14, debug_string); // offset from top-left
+    SDL_SetRenderScale(app->renderer, prevScaleX, prevScaleY); // restore scale
+}
+
+void render_scene(app_hlpr_t* app) {
+    Uint64 now = SDL_GetTicksNS();
+
     SDL_SetRenderDrawColor(app->renderer, 20, 20, 30, 255); 
     SDL_RenderClear(app->renderer);
 
-	renderer_draw_grid(app);
-	renderer_draw_player(app);
+	render_draw_grid(app);
+	render_draw_player(app);
+
+	render_fps_bar(app, now);
 
     SDL_RenderPresent(app->renderer);
 }

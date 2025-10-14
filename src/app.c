@@ -1,6 +1,6 @@
 #include "app.h"
 #include "SDL3/SDL_events.h"
-#include "renderer.h"
+#include "render.h"
 #include "log.h"
 #include "world.h"
 #include "player.h"
@@ -86,7 +86,7 @@ void app_run(app_hlpr_t *app) {
     while (app->is_running) {
         process_input(app);
         update();
-        scene_render(app);
-        SDL_Delay(16);
+        render_scene(app);
+        // SDL_Delay(16);
     }
 }
