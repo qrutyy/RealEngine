@@ -9,5 +9,6 @@ world_t *world_create() {
 		log_error("Failed to create world\n");
 		return NULL;
 	}
+	world->cam_zoom = 1.0f;
 	return world;
 }

@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define ZOOM_MAX 3.0f
+#define ZOOM_MIN 0.2f
 
 app_hlpr_t* app_create(void) {
     app_hlpr_t* app = calloc(1, sizeof(struct app_hlpr));
@@ -84,7 +86,46 @@ static void pl_process_key_event(SDL_KeyboardEvent kb_event, world_t *world, uin
 }
 
 static void cam_process_key_event(SDL_KeyboardEvent kb_event, world_t *world, uint32_t sdl_kb_event_type) {
-
+    if (sdl_kb_event_type != SDL_EVENT_KEY_DOWN) return;
+    switch (kb_event.key) {
+        case SDLK_UP:
+            world->cam_pos.y -= 1;
+			world->cam_pos.x -= 1;
+            log_info("Camera moved up: %d %d", world->cam_pos.x, world->cam_pos.y);
+            break;
+        case SDLK_DOWN:
+            world->cam_pos.y += 1;
+			world->cam_pos.x += 1;
+            log_info("Camera moved down: %d %d", world->cam_pos.x, world->cam_pos.y);
+            break;
+        case SDLK_LEFT:
+            world->cam_pos.x -= 1;
+			world->cam_pos.y += 1;
+            log_info("Camera moved left: %d %d", world->cam_pos.x, world->cam_pos.y);
+            break;
+        case SDLK_RIGHT:
+            world->cam_pos.x += 1;
+			world->cam_pos.y -= 1;
+            log_info("Camera moved right: %d %d", world->cam_pos.x, world->cam_pos.y);
+            break;
+        case SDLK_PLUS:
+        case SDLK_EQUALS:
+            if (world->cam_zoom < ZOOM_MAX) {
+                world->cam_zoom *= 1.1f;
+                if(world->cam_zoom > ZOOM_MAX) world->cam_zoom = ZOOM_MAX;
+                log_info("Camera zoom in: %.2f", world->cam_zoom);
+            }
+            break;
+        case SDLK_MINUS:
+            if (world->cam_zoom > ZOOM_MIN) {
+                world->cam_zoom /= 1.1f;
+                if(world->cam_zoom < ZOOM_MIN) world->cam_zoom = ZOOM_MIN;
+                log_info("Camera zoom out: %.2f", world->cam_zoom);
+            }
+            break;
+        default:
+            break;
+    }
 }
 
 static void process_input(app_hlpr_t* app) {
@@ -115,14 +156,34 @@ static void update(void) {
 static void render(app_hlpr_t* app) {
     SDL_SetRenderDrawColor(app->renderer, 20, 20, 30, 255); 
     SDL_RenderClear(app->renderer);
-    // Draw grid
-    renderer_draw_grid(app->renderer);
+    world_t *world = app->world;
+    float zoom = world->cam_zoom; // TODO: fix zoom feature
+    int cam_x = world->cam_pos.x;
+    int cam_y = world->cam_pos.y;
+    // Draw grid (with zoom/camera offset adjustment)
+    for (int y = 0; y < GRID_HEIGHT; ++y) {
+        for (int x = 0; x < GRID_WIDTH; ++x) {
+            int grid_x = x - cam_x;
+            int grid_y = y - cam_y;
+            int sx = (grid_x - grid_y) * TILE_WIDTH_HALF * zoom + OFFSET_X;
+            int sy = (grid_x + grid_y) * TILE_HEIGHT_HALF * zoom + OFFSET_Y;
+            SDL_FPoint points[5] = {
+                { (float)sx, (float)(sy + TILE_HEIGHT_HALF * zoom) },
+                { (float)(sx + TILE_WIDTH_HALF * zoom), (float)sy },
+                { (float)sx, (float)(sy - TILE_HEIGHT_HALF * zoom) },
+                { (float)(sx - TILE_WIDTH_HALF * zoom), (float)sy },
+                { (float)sx, (float)(sy + TILE_HEIGHT_HALF * zoom) }
+            };
+            SDL_SetRenderDrawColor(app->renderer, 100, 120, 150, 255);
+            SDL_RenderLines(app->renderer, points, 5);
+        }
+    }
     // Draw player
-    int tile_x = app->world->pl_pos.x;
-    int tile_y = app->world->pl_pos.y;
-    int sx = (tile_x - tile_y) * TILE_WIDTH_HALF + OFFSET_X;
-    int sy = (tile_x + tile_y) * TILE_HEIGHT_HALF + OFFSET_Y;
-    SDL_FRect player_rect = {(float)(sx-8), (float)(sy-8), 16.0f, 16.0f};
+    int tile_x = world->pl_pos.x - cam_x;
+    int tile_y = world->pl_pos.y - cam_y;
+    int sx = (tile_x - tile_y) * TILE_WIDTH_HALF * zoom + OFFSET_X;
+    int sy = (tile_x + tile_y) * TILE_HEIGHT_HALF * zoom + OFFSET_Y;
+    SDL_FRect player_rect = {(float)(sx-8*zoom), (float)(sy-8*zoom), 16.0f*zoom, 16.0f*zoom};
     SDL_SetRenderDrawColor(app->renderer, 255, 100, 30, 255);
     SDL_RenderRect(app->renderer, &player_rect);
     SDL_RenderPresent(app->renderer);
