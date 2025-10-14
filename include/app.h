@@ -4,7 +4,7 @@
 #include <SDL3/SDL.h>
 #include "world.h"
 
-#define WINDOW_WIDTH 800
+#define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 800
 #define WINDOW_NAME "RealEngine"
 
