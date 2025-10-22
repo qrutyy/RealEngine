@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-struct m_vec2{
+typedef struct m_vec2{
     int x;
     int y;
 } m_vec2_t;
