@@ -17,7 +17,6 @@
 #define OFFSET_Y 0 
 
 void render_draw_grid(app_hlpr_t *app);
-void render_draw_player(app_hlpr_t *app); 
 void render_scene(app_hlpr_t *app);
 
 #endif // RENDERER_H

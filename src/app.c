@@ -3,7 +3,6 @@
 #include "render.h"
 #include "log.h"
 #include "world.h"
-#include "player.h"
 #include "camera.h"
 #include <SDL3/SDL.h>
 #include <stdbool.h>
@@ -20,10 +19,7 @@ static void process_input(app_hlpr_t* app) {
             app->is_running = false;
         }
 		if (event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_KEY_UP) {
-			if (event.key.key <= SDLK_Z && event.key.key >= SDLK_A) {
-				app->key_event = event.key;	
-				pl_process_key_event(app->key_event, app->world, event.type);
-			} else if (event.key.key <= SDLK_UP && event.key.key >= SDLK_RIGHT) {
+			if (event.key.key <= SDLK_UP && event.key.key >= SDLK_RIGHT) {
 				app->key_event = event.key;	
 				cam_process_key_event(app->key_event, app->world, event.type);
 			}

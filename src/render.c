@@ -2,27 +2,6 @@
 #include "app.h"
 #include <stdint.h>
 
-void render_draw_player(app_hlpr_t *app) {
-    world_t *world = app->world;
-    float zoom = world->cam_zoom;
-    int cam_x = world->cam_pos.x;
-    int cam_y = world->cam_pos.y;
-    int tile_x = world->pl_pos.x - cam_x;
-    int tile_y = world->pl_pos.y - cam_y;
-    int sx = (tile_x - tile_y) * TILE_WIDTH_HALF * zoom + OFFSET_X;
-    int sy = (tile_x + tile_y) * TILE_HEIGHT_HALF * zoom + OFFSET_Y;
-    SDL_FPoint points[5] = {
-        { (float)sx, (float)(sy + TILE_HEIGHT_HALF * zoom) },
-        { (float)(sx + TILE_WIDTH_HALF * zoom), (float)sy },
-        { (float)sx, (float)(sy - TILE_HEIGHT_HALF * zoom) },
-        { (float)(sx - TILE_WIDTH_HALF * zoom), (float)sy },
-        { (float)sx, (float)(sy + TILE_HEIGHT_HALF * zoom) }
-    };
-    SDL_SetRenderDrawColor(app->renderer, 255, 100, 30, 255);
-    SDL_RenderLines(app->renderer, points, 5);
-}
-
-
 // Draw grid (with zoom/camera offset adjustment)
 void render_draw_grid(app_hlpr_t *app) {
     world_t *world = app->world;
@@ -78,7 +57,6 @@ void render_scene(app_hlpr_t* app) {
     SDL_RenderClear(app->renderer);
 
 	render_draw_grid(app);
-	render_draw_player(app);
 
 	render_fps_bar(app, now);
 
