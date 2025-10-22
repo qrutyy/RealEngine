@@ -1,16 +1,28 @@
 #ifndef TILE_H
 #define TILE_H
 
-// SHOULD define
-// TILE_HEIGHT, TILE_WIDTH, GRID_WIDTH, GRID_HEIGHT
+// User SHOULD define these things for now
+// Should make this easier in futute
 
+#define TILE_SRC_X 256 // position in source image from up to bottom in pixels
+#define TILE_SRC_Y 64 // position in source image from left to right in pixels
 #define TILE_WIDTH 128
 #define TILE_HEIGHT 64
 
-#define TEST_TILE "assets/ScreamingBrainStudios/Isometric_Floor_Tiles_Small_128x64/Small_128x64/Exterior/Grass/Floor_Grass_02-128x64p.png"
+#define TEST_TILE "assets/tiles/ScreamingBrainStudios/Isometric_Floor_Tiles_Small_128x64/Small_128x64/Interior/Tile/Floor_Tile_02-128x64p.png"
 
-#define SCENE_WIDTH 50
-#define SCENE_HEIGHT 50
+#define MAIN_CHAR_SRC_X 0 // position in source image from up to bottom in pixels
+#define MAIN_CHAR_SRC_Y 0 // position in source image from left to right in pixels
+#define MAIN_CHAR_WIDTH 512
+#define MAIN_CHAR_HEIGHT 512
 
+// North, south, east, west
+#define MAIN_CHAR_IMG_N "assets/characters/Hormelz/2hIdle/GreatSwordKnight_2hIdle5_dir4.png"
+#define MAIN_CHAR_IMG_S "assets/characters/Hormelz/2hIdle/GreatSwordKnight_2hIdle5_dir8.png"
+#define MAIN_CHAR_IMG_E "assets/characters/Hormelz/2hIdle/GreatSwordKnight_2hIdle5_dir6.png"
+#define MAIN_CHAR_IMG_W "assets/characters/Hormelz/2hIdle/GreatSwordKnight_2hIdle5_dir2.png"
+
+#define SCENE_WIDTH 100
+#define SCENE_HEIGHT 100
 
 #endif // TILE_H

@@ -1,13 +1,16 @@
 #include "render.h"
 #include "app.h"
+#include "log.h"
 #include <stdint.h>
-#include <stdio.h>
 
-void draw_scene(app_hlpr_t *app) {
+// this should be with other sprites, it's here only temporarily
+static SDL_Surface *image_n, *image_s, *image_e, *image_w;
+
+void render_background(app_hlpr_t *app) {
     SDL_Window *window = app->window;
     SDL_Surface *screen = SDL_GetWindowSurface(window);
 
-    const SDL_Rect rect_src = {0, 0, TILE_WIDTH, TILE_HEIGHT};
+    const SDL_Rect rect_src = {TILE_SRC_X, TILE_SRC_Y, TILE_WIDTH, TILE_HEIGHT};
     SDL_Rect rect_dest = {0, 0, TILE_WIDTH, TILE_HEIGHT};
 
     int cam_x = app->cam_pos.x;
@@ -16,6 +19,10 @@ void draw_scene(app_hlpr_t *app) {
     SDL_FillSurfaceRect(screen, NULL, 0);
 
     SDL_Surface *image = SDL_LoadPNG(TEST_TILE);
+    if (!image) {
+        log_debug("Failed to load image %s\n", TEST_TILE);
+        return;
+    }
 
     for (int y = 0; y < SCENE_HEIGHT; ++y) {
         for (int x = 0; x < SCENE_WIDTH; ++x) {
@@ -28,17 +35,68 @@ void draw_scene(app_hlpr_t *app) {
             rect_dest.y = sy;
 
             SDL_BlitSurface(image, &rect_src, screen, &rect_dest);
-
         }
     }
     SDL_DestroySurface(image);
-    SDL_UpdateWindowSurface(window);
+    // SDL_UpdateWindowSurface(window);
+}
+
+void render_main_char(app_hlpr_t *app) {
+    SDL_Window *window = app->window;
+    SDL_Surface *screen = SDL_GetWindowSurface(window);
+
+    const SDL_Rect rect_src = {MAIN_CHAR_SRC_X, MAIN_CHAR_SRC_Y, MAIN_CHAR_WIDTH, MAIN_CHAR_HEIGHT};
+    SDL_Rect rect_dest = {TILE_WIDTH, TILE_HEIGHT, 0, 0};
+
+    SDL_Surface *image;
+
+    // all images should be loaded BEFORE the render phase and CLEARED after
+    switch (app->key_event.key) {
+        case SDLK_UP:
+            if (!image_n) {
+                image_n = SDL_LoadPNG(MAIN_CHAR_IMG_N);
+            }
+            image = image_n;
+            // log_debug("Camera moved up: %d %d", cam_pos->x, cam_pos->y);
+            break;
+        case SDLK_LEFT:
+            if (!image_w) {
+                image_w = SDL_LoadPNG(MAIN_CHAR_IMG_W);
+            }
+            image = image_w;
+            // log_debug("Camera moved left: %d %d", cam_pos->x, cam_pos->y);
+            break;
+        case SDLK_RIGHT:
+            if (!image_e) {
+                image_e = SDL_LoadPNG(MAIN_CHAR_IMG_E);
+            }
+            image = image_e;
+            // log_debug("Camera moved right: %d %d", cam_pos->x, cam_pos->y);
+            break;
+        default:
+        case SDLK_DOWN:
+            if (!image_s) {
+                image_s = SDL_LoadPNG(MAIN_CHAR_IMG_S);
+            }
+            image = image_s;
+            // log_debug("Camera moved down: %d %d", cam_pos->x, cam_pos->y);
+            break;
+    }
+
+    if (!image) {
+        log_debug("Failed to load main character image.\n");
+        return;
+    }
+
+    SDL_BlitSurface(image, &rect_src, screen, &rect_dest);
 }
 
 void render_scene(app_hlpr_t* app) {
     // do preparations, such as
-    // find out positions of all the objects
-    // and intersect scene with the camera
+    // find out positions of all the objects in the camera
+    // intersect scene with the camera to not draw extra things
 
-	draw_scene(app);
+	render_background(app);
+    render_main_char(app);
+    SDL_UpdateWindowSurface(app->window);
 }
