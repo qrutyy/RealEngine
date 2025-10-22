@@ -4,23 +4,21 @@
 
 // Draw grid (with zoom/camera offset adjustment)
 void render_draw_grid(app_hlpr_t *app) {
-    world_t *world = app->world;
-    float zoom = world->cam_zoom; // TODO: fix zoom feature
-    int cam_x = world->cam_pos.x;
-    int cam_y = world->cam_pos.y;
+    int cam_x = app->cam_pos.x;
+    int cam_y = app->cam_pos.y;
 
     for (int y = 0; y < GRID_HEIGHT; ++y) {
         for (int x = 0; x < GRID_WIDTH; ++x) {
             int grid_x = x - cam_x;
             int grid_y = y - cam_y;
-            int sx = (grid_x - grid_y) * TILE_WIDTH_HALF * zoom + OFFSET_X;
-            int sy = (grid_x + grid_y) * TILE_HEIGHT_HALF * zoom + OFFSET_Y;
+            int sx = (grid_x - grid_y) * TILE_WIDTH_HALF + OFFSET_X;
+            int sy = (grid_x + grid_y) * TILE_HEIGHT_HALF + OFFSET_Y;
             SDL_FPoint points[5] = {
-                { (float)sx, (float)(sy + TILE_HEIGHT_HALF * zoom) },
-                { (float)(sx + TILE_WIDTH_HALF * zoom), (float)sy },
-                { (float)sx, (float)(sy - TILE_HEIGHT_HALF * zoom) },
-                { (float)(sx - TILE_WIDTH_HALF * zoom), (float)sy },
-                { (float)sx, (float)(sy + TILE_HEIGHT_HALF * zoom) }
+                { (float)sx, (float)(sy + TILE_HEIGHT_HALF) },
+                { (float)(sx + TILE_WIDTH_HALF), (float)sy },
+                { (float)sx, (float)(sy - TILE_HEIGHT_HALF) },
+                { (float)(sx - TILE_WIDTH_HALF), (float)sy },
+                { (float)sx, (float)(sy + TILE_HEIGHT_HALF) }
             };
             SDL_SetRenderDrawColor(app->renderer, 100, 120, 150, 255);
             SDL_RenderLines(app->renderer, points, 5);
@@ -28,6 +26,7 @@ void render_draw_grid(app_hlpr_t *app) {
     }
 }
 
+// this is not correct fps
 void render_fps_bar(app_hlpr_t *app, uint64_t now) {
     static uint64_t last_update = 0;
     static int frame_count = 0;
@@ -62,5 +61,3 @@ void render_scene(app_hlpr_t* app) {
 
     SDL_RenderPresent(app->renderer);
 }
-
-

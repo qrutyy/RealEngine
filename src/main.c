@@ -13,7 +13,6 @@ int main(int argc, char *argv[]) {
     if (!app) {
         return EXIT_FAILURE;
     }
-
     app_run(app);
 
     app_destroy(app);

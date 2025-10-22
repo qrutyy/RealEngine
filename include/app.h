@@ -2,17 +2,18 @@
 #define APP_H
 
 #include <SDL3/SDL.h>
-#include "world.h"
+#include "types.h"
 
-#define WINDOW_WIDTH 200
-#define WINDOW_HEIGHT 200
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 800
 #define WINDOW_NAME "RealEngine"
 
 typedef struct app_hlpr {
     SDL_Window* window;
     SDL_Renderer* renderer;
 	SDL_KeyboardEvent key_event;
-	world_t *world;
+    SDL_Surface* scene;
+	m_vec2_t cam_pos;
     bool is_running;
 } app_hlpr_t ;
 

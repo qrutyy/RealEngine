@@ -2,7 +2,6 @@
 #include "SDL3/SDL_events.h"
 #include "render.h"
 #include "log.h"
-#include "world.h"
 #include "camera.h"
 #include <SDL3/SDL.h>
 #include <stdbool.h>
@@ -21,7 +20,7 @@ static void process_input(app_hlpr_t* app) {
 		if (event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_KEY_UP) {
 			if (event.key.key <= SDLK_UP && event.key.key >= SDLK_RIGHT) {
 				app->key_event = event.key;	
-				cam_process_key_event(app->key_event, app->world, event.type);
+				cam_process_key_event(app->key_event, &app->cam_pos, event.type);
 			}
 		}
     }
@@ -52,11 +51,8 @@ app_hlpr_t* app_create(void) {
 		goto err_ex;
     }
 
-	app->world = world_create();
-	if (!app->world) {
-		SDL_Quit();
-		goto err_ex;
-	}
+    app->cam_pos.x = 0;
+    app->cam_pos.y = 0;
 
     app->is_running = true;
     return app;
