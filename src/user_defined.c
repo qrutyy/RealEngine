@@ -1,5 +1,6 @@
 #include "user_defined.h"
 
+// load assets and link them here
 int user_function(const app_hlpr_t *app) {
     char *key = RE_load_asset(
         "assets/tiles/ScreamingBrainStudios/Isometric_Floor_Tiles_Small_128x64/Small_128x64/Exterior/Grass/Floor_Grass_02-128x64p.png",

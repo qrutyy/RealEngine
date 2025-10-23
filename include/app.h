@@ -17,9 +17,9 @@ typedef struct cam {
 } cam_t;
 
 typedef struct app_hlpr {
-    SDL_Window* window;
-	SDL_KeyboardEvent key_event;
     SDL_Surface *grid[SCENE_WIDTH][SCENE_HEIGHT];
+	SDL_KeyboardEvent key_event;
+    SDL_Window* window;
 	cam_t cam;
     bool is_running;
 } app_hlpr_t ;
