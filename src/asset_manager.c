@@ -6,7 +6,7 @@
 #include <SDL3/SDL.h>
 
 #define HASHTABLE_MAX_SIZE 1000
-#define MAX_KEY_LEN 64
+#define MAX_KEY_LEN 300
 
 static struct asset {
     char *key;
@@ -55,6 +55,7 @@ static asset_h *hashtable_add(char *key, SDL_Surface *img) {
     }
 
     unsigned int hash = hash_djb2(key);
+    // log_debug(" key: %s\n hash: %u\n", key, hash);
 
     asset = create_asset(key, img);
     if (!asset) {
@@ -86,6 +87,8 @@ char *RE_load_asset(char *filename, int src_x, int src_y, int width, int height)
         if (!full) {
             return NULL;
         }
+        // log_debug("Loaded asset from %s with key %s\n", filename, filename);
+
     }
 
     char *asset_key = malloc(MAX_KEY_LEN);
@@ -93,6 +96,8 @@ char *RE_load_asset(char *filename, int src_x, int src_y, int width, int height)
         log_error("Failed to allocate memory for asset %s key.\n", filename);
         return NULL;
     }
+
+    strncpy(asset_key, asset_keya, MAX_KEY_LEN);
 
     SDL_Surface *image;
     image = SDL_CreateSurface(width, height, full->img->format);
@@ -103,8 +108,8 @@ char *RE_load_asset(char *filename, int src_x, int src_y, int width, int height)
     }
 
     const SDL_Rect rect = {src_x, src_y, width, height};
-    int err = SDL_BlitSurface(full->img, &rect, image, NULL);
-    if (err) {
+    int ret = SDL_BlitSurface(full->img, &rect, image, NULL);
+    if (!ret) {
         log_error("Failed to extract asset from image %s with specified parameters.\n", filename);
         SDL_DestroySurface(image);
         free(asset_key);
@@ -112,6 +117,8 @@ char *RE_load_asset(char *filename, int src_x, int src_y, int width, int height)
     }
 
     asset = hashtable_add(asset_key, image);
+
+    // log_debug("Loaded asset from %s with key %s\n", filename, asset->key);
 
     return asset->key;
 }
