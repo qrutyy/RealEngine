@@ -1,7 +1,7 @@
 #include "app.h"
 #include "asset_manager.h"
 #include "log.h"
-#include "err.h"
+#include "errors.h"
 #include <stdlib.h>
 #include <SDL3/SDL.h>
 
@@ -127,4 +127,25 @@ SDL_Surface *RE_get_asset(char *key) {
     asset_h *asset = hashtable_get(key);
     if (asset) return asset->img;
     return NULL;
+}
+
+int RE_assign_asset_static(app_hlpr_t *app, char *key, int layer, int x, int y) {
+    asset_h *asset = hashtable_get(key);
+    if (!asset) {
+        log_error("Asset with key %s was not loaded\n", key);
+        return ERR_ASSET_NOT_LOADED;
+    }
+
+    // check for underflow?
+    if (x > SCENE_WIDTH) {
+        log_error("Error: x = %d exceeds scene width: %d\n", x, SCENE_WIDTH);
+        return ERR_ARGS;
+    }
+    if (y > SCENE_HEIGHT) {
+        log_error("Error: y = %d exceeds scene height: %d\n", y, SCENE_HEIGHT);
+        return ERR_ARGS;
+    }
+    app->grid[x][y] = hashtable_get(key)->img;
+
+    return 0;
 }

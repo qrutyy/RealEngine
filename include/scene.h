@@ -9,7 +9,7 @@
 #define TILE_WIDTH 128
 #define TILE_HEIGHT 64
 
-#define TEST_TILE "assets/tiles/ScreamingBrainStudios/Isometric_Floor_Tiles_Small_128x64/Small_128x64/Interior/Tile/Floor_Tile_02-128x64p.png"
+#define TEST_TILE "assets/tiles/ScreamingBrainStudios/Isometric_Floor_Tiles_Small_128x64/Small_128x64/Exterior/Grass/Floor_Grass_02-128x64p.png"
 
 #define MAIN_CHAR_SRC_X 0 // position in source image from up to bottom in pixels
 #define MAIN_CHAR_SRC_Y 0 // position in source image from left to right in pixels

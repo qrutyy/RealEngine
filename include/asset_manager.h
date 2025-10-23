@@ -3,7 +3,6 @@
 #define ASSET_MANAGER_H
 
 #include <SDL3/SDL.h>
-#define SHORT_SIZE 32
 
 /*
     A number specifying entity's behaviour.
@@ -39,19 +38,18 @@ char *RE_load_asset(char *filename, int src_x, int src_y, int width, int height)
 */
 SDL_Surface *RE_get_asset(char *key);
 
+// works only for tiles?
 /*
-    Create a game entity.
+    Assign asset to a static object.
 
-    @param filename a filename of loaded asset.
-    @param behaviour which behaviour entity follows.
-    @param x x of a tile on which entity is created.
-    @param y y of a tile on which enity is created.
-    
-    @return 0 on success, error code otherwise.
+    @param app an app handle.
+    @param key a key associated with some asset.
+    @param layer TODO
+    @param x x of a tile on which to add static object.
+    @param y y of a tile on which to add static object.
+
+    @returns 0 on success, error code otherwise.
 */
-int RE_create_entity(char *filename, enum e_behaviour behaviour, int x, int y);
-
-// if filename is not loaded, return error
-int RE_create_static(char *filename, int layer, int x, int y);
+int RE_assign_asset_static(app_hlpr_t *app, char *key, int layer, int x, int y);
 
 #endif // ASSET_MANAGER_H

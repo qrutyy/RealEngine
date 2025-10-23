@@ -9,23 +9,21 @@ static SDL_Surface *image_n, *image_s, *image_e, *image_w;
 void render_background(app_hlpr_t *app) {
     SDL_Window *window = app->window;
     SDL_Surface *screen = SDL_GetWindowSurface(window);
-
-    const SDL_Rect rect_src = {TILE_SRC_X, TILE_SRC_Y, TILE_WIDTH, TILE_HEIGHT};
+    
     SDL_Rect rect_dest = {0, 0, TILE_WIDTH, TILE_HEIGHT};
 
-    int cam_x = app->cam_pos.x;
-    int cam_y = app->cam_pos.y;
+    int cam_x = app->cam.x;
+    int cam_y = app->cam.y;
 
-    SDL_FillSurfaceRect(screen, NULL, 0);
+    // light blue for sky
+    Uint32 color = SDL_MapSurfaceRGB(screen, 144, 213, 255);
 
-    SDL_Surface *image = SDL_LoadPNG(TEST_TILE);
-    if (!image) {
-        log_debug("Failed to load image %s\n", TEST_TILE);
-        return;
-    }
+    SDL_FillSurfaceRect(screen, NULL, color);
 
     for (int y = 0; y < SCENE_HEIGHT; ++y) {
         for (int x = 0; x < SCENE_WIDTH; ++x) {
+
+            SDL_Surface *image = app->grid[x][y];
             int grid_x = x - cam_x;
             int grid_y = y - cam_y;
             int sx = (grid_x - grid_y) * (TILE_WIDTH/2) + OFFSET_X;
@@ -34,10 +32,10 @@ void render_background(app_hlpr_t *app) {
             rect_dest.x = sx;
             rect_dest.y = sy;
 
-            SDL_BlitSurface(image, &rect_src, screen, &rect_dest);
+            SDL_BlitSurface(image, NULL, screen, &rect_dest);
         }
     }
-    SDL_DestroySurface(image);
+    // SDL_DestroySurface(image);
     // SDL_UpdateWindowSurface(window);
 }
 
@@ -57,21 +55,21 @@ void render_main_char(app_hlpr_t *app) {
                 image_n = SDL_LoadPNG(MAIN_CHAR_IMG_N);
             }
             image = image_n;
-            // log_debug("Camera moved up: %d %d", cam_pos->x, cam_pos->y);
+            // log_debug("Camera moved up: %d %d", cam->x, cam->y);
             break;
         case SDLK_LEFT:
             if (!image_w) {
                 image_w = SDL_LoadPNG(MAIN_CHAR_IMG_W);
             }
             image = image_w;
-            // log_debug("Camera moved left: %d %d", cam_pos->x, cam_pos->y);
+            // log_debug("Camera moved left: %d %d", cam->x, cam->y);
             break;
         case SDLK_RIGHT:
             if (!image_e) {
                 image_e = SDL_LoadPNG(MAIN_CHAR_IMG_E);
             }
             image = image_e;
-            // log_debug("Camera moved right: %d %d", cam_pos->x, cam_pos->y);
+            // log_debug("Camera moved right: %d %d", cam->x, cam->y);
             break;
         default:
         case SDLK_DOWN:
@@ -79,7 +77,7 @@ void render_main_char(app_hlpr_t *app) {
                 image_s = SDL_LoadPNG(MAIN_CHAR_IMG_S);
             }
             image = image_s;
-            // log_debug("Camera moved down: %d %d", cam_pos->x, cam_pos->y);
+            // log_debug("Camera moved down: %d %d", cam->x, cam->y);
             break;
     }
 
@@ -95,6 +93,8 @@ void render_scene(app_hlpr_t* app) {
     // do preparations, such as
     // find out positions of all the objects in the camera
     // intersect scene with the camera to not draw extra things
+
+    // intersect_camera_scene(app);
 
 	render_background(app);
     render_main_char(app);
