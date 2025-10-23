@@ -18,7 +18,6 @@ typedef struct cam {
 
 typedef struct app_hlpr {
     SDL_Window* window;
-    SDL_Renderer* renderer;
 	SDL_KeyboardEvent key_event;
     SDL_Surface *grid[SCENE_WIDTH][SCENE_HEIGHT];
 	cam_t cam;

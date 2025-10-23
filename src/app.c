@@ -45,13 +45,6 @@ app_hlpr_t* app_create(void) {
 		goto err_ex;
     }
 
-    app->renderer = SDL_CreateRenderer(app->window, NULL);
-    if (!app->renderer) {
-		log_debug("app render failed\n");
-		SDL_Quit();
-		goto err_ex;
-    }
-
     app->cam.x = 0;
     app->cam.y = 0;
 
@@ -66,7 +59,6 @@ err_ex:
 
 void app_destroy(app_hlpr_t *app) {
     if (!app) return;
-    SDL_DestroyRenderer(app->renderer);
     SDL_DestroyWindow(app->window);
     SDL_Quit();
     free(app);
