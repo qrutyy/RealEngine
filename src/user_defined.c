@@ -1,7 +1,15 @@
 #include "user_defined.h"
 
+const int WIDTH = 20;
+const int HEIGHT = 20;
+
+const int TILE_WIDTH = 128;
+const int TILE_HEIGHT = 64;
+
 // load assets and link them here
-int user_function(const app_hlpr_t *app) {
+int user_function(app_hlpr_t *app) {
+    RE_init_grid(app, WIDTH, HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+
     char *key = RE_load_asset(
         "assets/tiles/ScreamingBrainStudios/Isometric_Floor_Tiles_Small_128x64/Small_128x64/Exterior/Grass/Floor_Grass_02-128x64p.png",
         256, 64, 128, 64
@@ -12,9 +20,8 @@ int user_function(const app_hlpr_t *app) {
         128, 128, 128, 64
     );
 
-    for (int x = 0; x < 50; x++) {
-        for (int y = 0; y < 50; y++) {
-            if (x == 0  && y == 0) continue;
+    for (int x = 0; x < WIDTH; x++) {
+        for (int y = 0; y < HEIGHT; y++) {
             RE_assign_asset_static(app, key, 0, x, y);
     
             if (x >= 5 && x <= 6) {

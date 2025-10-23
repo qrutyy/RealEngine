@@ -136,16 +136,18 @@ int RE_assign_asset_static(app_hlpr_t *app, char *key, int layer, int x, int y) 
         return ERR_ASSET_NOT_LOADED;
     }
 
+    int width = app->grid.tile_num_x;
+    int height = app->grid.tile_num_y;
     // check for underflow?
-    if (x > SCENE_WIDTH) {
-        log_error("Error: x = %d exceeds scene width: %d\n", x, SCENE_WIDTH);
+    if (x > width) {
+        log_error("Error: x = %d exceeds scene width: %d\n", x, width);
         return ERR_ARGS;
     }
-    if (y > SCENE_HEIGHT) {
-        log_error("Error: y = %d exceeds scene height: %d\n", y, SCENE_HEIGHT);
+    if (y > height) {
+        log_error("Error: y = %d exceeds scene height: %d\n", y, height);
         return ERR_ARGS;
     }
-    app->grid[x][y] = hashtable_get(key)->img;
+    app->grid.tiles[x][y] = hashtable_get(key)->img;
 
     return 0;
 }

@@ -3,6 +3,7 @@
 #include "render.h"
 #include "log.h"
 #include "scene.h"
+#include "errors.h"
 #include "camera.h"
 #include <SDL3/SDL.h>
 #include <stdbool.h>
@@ -75,4 +76,38 @@ void app_run(app_hlpr_t *app) {
         render_scene(app);
         // SDL_Delay(16);
     }
+}
+
+int RE_init_grid(app_hlpr_t *app, int tile_num_x, int tile_num_y, int tile_width, int tile_height) {
+    SDL_Surface ***tiles;
+
+    tiles = malloc(sizeof(SDL_Surface **) * tile_num_x);
+    if (!tiles) {
+        log_error("Failed to allocate memory for tiles.\n");
+        return ERR_NOMEM;
+    }
+
+    for (int k = 0; k < tile_num_x; k++) {
+        tiles[k] = malloc(sizeof(SDL_Surface *) * tile_num_y);
+        if (!tiles[k]) {
+            log_error("Failed to allocate memory for tiles[%d].\n", k);
+            for (int f = 0; f < k; f++) {
+                free(tiles[f]);
+            }
+            free(tiles);
+            return ERR_NOMEM;
+        }
+        for (int j = 0; j < tile_num_y; j++) {
+            tiles[k][j] = NULL;
+        }
+    }
+
+    app->grid.tiles = tiles;
+    app->grid.tile_num_x = tile_num_x;
+    app->grid.tile_num_y = tile_num_y;
+    app->grid.tile_width = tile_width;
+    app->grid.tile_height = tile_height;
+    log_debug("Initialized grid %d x %d", tile_num_x, tile_num_y);
+
+    return 0;
 }

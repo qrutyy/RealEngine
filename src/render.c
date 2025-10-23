@@ -10,6 +10,9 @@ void render_background(app_hlpr_t *app) {
     SDL_Window *window = app->window;
     SDL_Surface *screen = SDL_GetWindowSurface(window);
     
+    int TILE_WIDTH = app->grid.tile_width;
+    int TILE_HEIGHT = app->grid.tile_height;
+
     SDL_Rect rect_dest = {0, 0, TILE_WIDTH, TILE_HEIGHT};
 
     int cam_x = app->cam.x;
@@ -20,10 +23,21 @@ void render_background(app_hlpr_t *app) {
 
     SDL_FillSurfaceRect(screen, NULL, color);
 
-    for (int y = 0; y < SCENE_HEIGHT; ++y) {
-        for (int x = 0; x < SCENE_WIDTH; ++x) {
+    if (!app->grid.tiles) {
+        log_debug("NO TILES!\n");
+        return;
+    }
 
-            SDL_Surface *image = app->grid[x][y];
+    int width = app->grid.tile_num_x;
+    int height = app->grid.tile_num_y;
+
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            SDL_Surface *image = app->grid.tiles[x][y];
+            if (!image) {
+                continue;
+            }
+
             int grid_x = x - cam_x;
             int grid_y = y - cam_y;
             int sx = (grid_x - grid_y) * (TILE_WIDTH/2) + OFFSET_X;
@@ -42,6 +56,9 @@ void render_background(app_hlpr_t *app) {
 void render_main_char(app_hlpr_t *app) {
     SDL_Window *window = app->window;
     SDL_Surface *screen = SDL_GetWindowSurface(window);
+
+    int TILE_WIDTH = app->grid.tile_width;
+    int TILE_HEIGHT = app->grid.tile_height;
 
     const SDL_Rect rect_src = {MAIN_CHAR_SRC_X, MAIN_CHAR_SRC_Y, MAIN_CHAR_WIDTH, MAIN_CHAR_HEIGHT};
     SDL_Rect rect_dest = {TILE_WIDTH, TILE_HEIGHT, 0, 0};
