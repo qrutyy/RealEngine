@@ -1,7 +1,8 @@
 #include "app.h"
-#include "asset_manager.h"
+#include "asset.h"
 #include "log.h"
 #include "errors.h"
+#include "hash.h"
 #include <stdlib.h>
 #include <SDL3/SDL.h>
 
@@ -13,6 +14,9 @@ static struct asset {
     SDL_Surface *img;
 };
 typedef struct asset asset_h;
+
+// storing structs directly would be faster
+static asset_h *assets[HASHTABLE_MAX_SIZE];
 
 static asset_h *create_asset(char *key, SDL_Surface *img) {
     asset_h *asset = malloc(sizeof(asset_h));
@@ -27,23 +31,10 @@ static void destroy_asset(asset_h *asset) {
     if (asset != NULL) free(asset);
 }
 
-static asset_h *ht_assets[HASHTABLE_MAX_SIZE];
-
-// Hash function invented by Daniel J. Bernstein
-static unsigned long hash_djb2(char *str) {
-    unsigned long hash = 5381;
-    int c;
-
-    while (c = *str++)
-        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-
-    return hash;
-}
-
 static asset_h *hashtable_get(char *key) {
-    unsigned int hash = hash_djb2(key);
+    unsigned int hash = hashf(key);
 
-    asset_h *asset = ht_assets[hash % HASHTABLE_MAX_SIZE];
+    asset_h *asset = assets[hash % HASHTABLE_MAX_SIZE];
 
     return asset;
 }
@@ -54,7 +45,7 @@ static asset_h *hashtable_add(char *key, SDL_Surface *img) {
         return asset;
     }
 
-    unsigned int hash = hash_djb2(key);
+    unsigned int hash = hashf(key);
     // log_debug(" key: %s\n hash: %u\n", key, hash);
 
     asset = create_asset(key, img);
@@ -62,7 +53,7 @@ static asset_h *hashtable_add(char *key, SDL_Surface *img) {
         log_error("Failed to create asset for image with key %s\n", key);
         return NULL;
     }
-    ht_assets[hash % HASHTABLE_MAX_SIZE] = asset;
+    assets[hash % HASHTABLE_MAX_SIZE] = asset;
 
     return asset;
 }
@@ -129,15 +120,15 @@ SDL_Surface *RE_get_asset(char *key) {
     return NULL;
 }
 
-int RE_assign_asset_static(app_hlpr_t *app, char *key, int layer, int x, int y) {
+int RE_assign_asset_static(grid_t *grid, char *key, int layer, int x, int y) {
     asset_h *asset = hashtable_get(key);
     if (!asset) {
         log_error("Asset with key %s was not loaded\n", key);
         return ERR_ASSET_NOT_LOADED;
     }
 
-    int width = app->grid.tile_num_x;
-    int height = app->grid.tile_num_y;
+    int width = grid->tile_num_x;
+    int height = grid->tile_num_y;
     // check for underflow?
     if (x > width) {
         log_error("Error: x = %d exceeds scene width: %d\n", x, width);
@@ -147,7 +138,7 @@ int RE_assign_asset_static(app_hlpr_t *app, char *key, int layer, int x, int y) 
         log_error("Error: y = %d exceeds scene height: %d\n", y, height);
         return ERR_ARGS;
     }
-    app->grid.tiles[x][y] = hashtable_get(key)->img;
+    grid->tiles[x][y] = asset->img;
 
     return 0;
 }

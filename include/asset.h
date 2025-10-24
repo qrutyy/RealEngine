@@ -5,18 +5,6 @@
 #include <SDL3/SDL.h>
 
 /*
-    A number specifying entity's behaviour.
-
-    PLAYER = 0
-    NPC = 1
-*/
-enum e_behaviour {
-    PLAYER = 0,
-    NPC = 1
-    // these should be more precise, to be added
-};
-
-/*
     Load asset from memory and store it into map.
 
     @param filename a name of image inside 'assets' folder.
@@ -42,7 +30,7 @@ SDL_Surface *RE_get_asset(char *key);
 /*
     Assign asset to a static object.
 
-    @param app an app handle.
+    @param grid a grid handle.
     @param key a key associated with some asset.
     @param layer TODO
     @param x x of a tile on which to add static object.
@@ -50,6 +38,6 @@ SDL_Surface *RE_get_asset(char *key);
 
     @returns 0 on success, error code otherwise.
 */
-int RE_assign_asset_static(app_hlpr_t *app, char *key, int layer, int x, int y);
+int RE_assign_asset_static(grid_t *grid, char *key, int layer, int x, int y);
 
 #endif // ASSET_MANAGER_H

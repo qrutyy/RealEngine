@@ -114,6 +114,6 @@ void render_scene(app_hlpr_t* app) {
     // intersect_camera_scene(app);
 
 	render_background(app);
-    render_main_char(app);
+    // render_main_char(app);
     SDL_UpdateWindowSurface(app->window);
 }
