@@ -39,7 +39,7 @@ void app_run(app_hlpr_t* app);
 /*
     Initialize game grid.
 
-    @param app an app handle.
+    @param grid a grid handle.
     @param tile_num_x width of a grid in tiles.
     @param tile_num_y height of a grid in tiles.
     @param tile_width width of a tile asset in pixels.
@@ -47,14 +47,14 @@ void app_run(app_hlpr_t* app);
 
     @returns 0 on success, error code otherwise.
 */
-int RE_init_grid(app_hlpr_t *app, int tile_num_x, int tile_num_y, int tile_width, int tile_height);
+int RE_init_grid(grid_t *grid, int tile_num_x, int tile_num_y, int tile_width, int tile_height);
 
 /*
     Destroy game grid.
 
-    @param app an app handle.
+    @param grid a grid handle.
 */
-void RE_destroy_grid(app_hlpr_t *app);
+void RE_destroy_grid(grid_t *grid);
 
 
 #endif // APP_H

@@ -1,4 +1,5 @@
 #include "app.h"
-#include "asset_manager.h"
+#include "asset.h"
+#include "entity.h"
 
-int user_function(app_hlpr_t *app);
+int user_function(grid_t *grid);

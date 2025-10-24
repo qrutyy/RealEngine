@@ -46,10 +46,6 @@ app_hlpr_t* app_create(void) {
 		goto err_ex;
     }
 
-    app->cam.x = 0;
-    app->cam.y = 0;
-
-
     app->is_running = true;
     return app;
 
@@ -70,6 +66,9 @@ static void update(void) {
 }
 
 void app_run(app_hlpr_t *app) {
+    // set cam coords to player entity coords
+    app->cam.x = 10;
+    app->cam.y = 20;
     while (app->is_running) {
         process_input(app);
         update();
@@ -78,8 +77,13 @@ void app_run(app_hlpr_t *app) {
     }
 }
 
-int RE_init_grid(app_hlpr_t *app, int tile_num_x, int tile_num_y, int tile_width, int tile_height) {
+int RE_init_grid(grid_t *grid, int tile_num_x, int tile_num_y, int tile_width, int tile_height) {
     SDL_Surface ***tiles;
+
+    if (!grid) {
+        log_debug("Failed to init grid: a grid pointer should not be NULL pointer.\n");
+        return ERR_ARGS;
+    }
 
     tiles = malloc(sizeof(SDL_Surface **) * tile_num_x);
     if (!tiles) {
@@ -102,11 +106,11 @@ int RE_init_grid(app_hlpr_t *app, int tile_num_x, int tile_num_y, int tile_width
         }
     }
 
-    app->grid.tiles = tiles;
-    app->grid.tile_num_x = tile_num_x;
-    app->grid.tile_num_y = tile_num_y;
-    app->grid.tile_width = tile_width;
-    app->grid.tile_height = tile_height;
+    grid->tiles = tiles;
+    grid->tile_num_x = tile_num_x;
+    grid->tile_num_y = tile_num_y;
+    grid->tile_width = tile_width;
+    grid->tile_height = tile_height;
     log_debug("Initialized grid %d x %d", tile_num_x, tile_num_y);
 
     return 0;

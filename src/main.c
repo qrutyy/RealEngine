@@ -1,6 +1,6 @@
 #include "app.h"
 #include "scene.h"
-#include "asset_manager.h"
+#include "asset.h"
 #include "user_defined.h"
 #include <stdlib.h>
 
@@ -17,8 +17,7 @@ int main(int argc, char *argv[]) {
     // call user functions which create entities and link
     // them with assets
     // load static assets (world, objects)
-
-    user_function(app);
+    user_function(&app->grid);
 
     app_run(app);
 
