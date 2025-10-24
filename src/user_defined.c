@@ -1,4 +1,4 @@
-#include "user_defined.h"
+#include "include.h"
 
 const int WIDTH = 20;
 const int HEIGHT = 20;
@@ -6,7 +6,6 @@ const int HEIGHT = 20;
 const int TILE_WIDTH = 128;
 const int TILE_HEIGHT = 64;
 
-// load assets and link them here
 int user_function(grid_t *grid) {
     RE_init_grid(grid, WIDTH, HEIGHT, TILE_WIDTH, TILE_HEIGHT);
 

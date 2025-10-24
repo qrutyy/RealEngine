@@ -1,8 +1,8 @@
-
 #ifndef ASSET_MANAGER_H
 #define ASSET_MANAGER_H
 
 #include <SDL3/SDL.h>
+#include "types.h"
 
 /*
     Load asset from memory and store it into map.
@@ -39,5 +39,19 @@ SDL_Surface *RE_get_asset(char *key);
     @returns 0 on success, error code otherwise.
 */
 int RE_assign_asset_static(grid_t *grid, char *key, int layer, int x, int y);
+
+/*
+    Initialize game grid.
+
+    @param grid a grid handle.
+    @param tile_num_x width of a grid in tiles.
+    @param tile_num_y height of a grid in tiles.
+    @param tile_width width of a tile asset in pixels.
+    @param tile_height height of a tile asset in pixels.
+
+    @returns 0 on success, error code otherwise.
+*/
+int RE_init_grid(grid_t *grid, int tile_num_x, int tile_num_y, int tile_width, int tile_height);
+
 
 #endif // ASSET_MANAGER_H

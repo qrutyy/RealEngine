@@ -1,6 +1,6 @@
-#include "app.h"
 #include "asset.h"
 #include "log.h"
+#include "asset.h"
 #include "errors.h"
 #include "hash.h"
 #include <stdlib.h>

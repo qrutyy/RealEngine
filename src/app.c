@@ -54,8 +54,33 @@ err_ex:
     return NULL;
 }
 
+static void destroy_grid(grid_t *grid) {
+    if (!grid) {
+        log_debug("Grid pointer is NULL.\n");
+        return;
+    }
+
+    if (!grid->tiles) {
+        log_debug("Tiles pointer is NULL.\n");
+        return;
+    }
+
+    for (int i = 0; i < grid->tile_num_x; i++) {
+        if (grid->tiles[i]) {
+            free(grid->tiles[i]);
+            grid->tiles[i] = NULL;
+        }
+    }
+
+    free(grid->tiles);
+    grid->tiles = NULL;
+
+    log_debug("Destroyed grid.\n");
+}
+
 void app_destroy(app_hlpr_t *app) {
     if (!app) return;
+    destroy_grid(&app->grid);
     SDL_DestroyWindow(app->window);
     SDL_Quit();
     free(app);

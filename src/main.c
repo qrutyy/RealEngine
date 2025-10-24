@@ -1,7 +1,7 @@
 #include "app.h"
 #include "scene.h"
 #include "asset.h"
-#include "user_defined.h"
+#include "include.h"
 #include <stdlib.h>
 
 int main(int argc, char *argv[]) {
@@ -18,6 +18,9 @@ int main(int argc, char *argv[]) {
     // them with assets
     // load static assets (world, objects)
     user_function(&app->grid);
+
+    // app_add_assets(app);
+    // app_add_entities(app);
 
     app_run(app);
 

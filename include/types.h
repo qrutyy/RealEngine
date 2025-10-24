@@ -2,6 +2,15 @@
 #define TYPES_H 
 
 #include <stdint.h>
+#include <SDL3/SDL.h>
+
+typedef struct grid {
+    SDL_Surface ***tiles; // a matrix of pointers to assets
+    int tile_num_x;
+    int tile_num_y;
+    int tile_width; // tile width in pixels
+    int tile_height; // tile height in pixels
+} grid_t;
 
 typedef struct m_vec2{
     int x;
