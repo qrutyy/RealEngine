@@ -32,7 +32,7 @@ int user_function(grid_t *grid) {
         }
     }
 
-    RE_add_entity(0, 1, 0);
+    RE_add_entity(0, 0, PLAYER);
     // RE_add_entity(0, 1, 0);
 
     return 0;

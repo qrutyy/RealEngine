@@ -1,5 +1,5 @@
-#ifndef TILE_H
-#define TILE_H
+#ifndef SCENE_H
+#define SCENE_H
 
 // User SHOULD define these things for now
 // Should make this easier in futute
@@ -20,4 +20,4 @@
 #define MAIN_CHAR_IMG_E "assets/characters/Hormelz/2hIdle/GreatSwordKnight_2hIdle5_dir6.png"
 #define MAIN_CHAR_IMG_W "assets/characters/Hormelz/2hIdle/GreatSwordKnight_2hIdle5_dir2.png"
 
-#endif // TILE_H
+#endif // SCENE_H

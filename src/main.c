@@ -19,8 +19,8 @@ int main(int argc, char *argv[]) {
     // load static assets (world, objects)
     user_function(&app->grid);
 
-    // app_add_assets(app);
-    // app_add_entities(app);
+    int err = app_setup(app);
+    if (err) app_destroy(app);
 
     app_run(app);
 

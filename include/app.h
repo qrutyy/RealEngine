@@ -4,6 +4,7 @@
 #include <SDL3/SDL.h>
 #include "types.h"
 #include "scene.h"
+#include "entity.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 800
@@ -20,6 +21,8 @@ typedef struct app_hlpr {
     SDL_KeyboardEvent key_event;
     SDL_Window* window;
     grid_t grid;
+    entity_t *entities;
+    int entities_num;
     cam_t cam;
     bool is_running;
 } app_hlpr_t ;
@@ -27,5 +30,6 @@ typedef struct app_hlpr {
 app_hlpr_t* app_create(void);
 void app_destroy(app_hlpr_t* app);
 void app_run(app_hlpr_t* app);
+int app_setup(app_hlpr_t *app);
 
 #endif // APP_H

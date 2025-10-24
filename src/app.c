@@ -5,6 +5,7 @@
 #include "scene.h"
 #include "errors.h"
 #include "camera.h"
+#include "entity.h"
 #include <SDL3/SDL.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -91,15 +92,38 @@ static void update(void) {
 }
 
 void app_run(app_hlpr_t *app) {
-    // set cam coords to player entity coords
-    app->cam.x = 10;
-    app->cam.y = 20;
     while (app->is_running) {
         process_input(app);
         update();
         render_scene(app);
         // SDL_Delay(16);
     }
+}
+
+static void add_entities(app_hlpr_t *app) {
+    app->entities = get_entities();
+    app->entities_num = get_entities_num();
+}
+
+static int setup_player(app_hlpr_t *app) {
+    for (int i = 0; i < app->entities_num; i++) {
+        entity_t ent = app->entities[i];
+        if (ent.beh == PLAYER) {
+            app->cam.x = ent.x;
+            app->cam.y = ent.y;
+            return 0;
+        }
+    }
+
+    log_debug("Error: player entity was not set.\n");
+    return 1;
+}
+
+int app_setup(app_hlpr_t *app) {
+    add_entities(app);
+
+    int err = setup_player(app);
+    return err;
 }
 
 int RE_init_grid(grid_t *grid, int tile_num_x, int tile_num_y, int tile_width, int tile_height) {

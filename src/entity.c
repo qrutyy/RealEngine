@@ -3,15 +3,6 @@
 #include "log.h"
 #include "errors.h"
 
-#define MAX_ENTITIES_NUM 1000
-
-typedef struct entity {
-    int x;
-    int y;
-    int depth;
-    enum e_behaviour beh;
-} entity_t;
-
 static entity_t entities[MAX_ENTITIES_NUM];
 
 static int curr_entities_num;
@@ -35,4 +26,12 @@ int RE_add_entity(int x, int y, enum e_behaviour beh) {
     log_debug("Added entity with behaviour %d on (%d, %d)\n", beh, x, y);
 
     return 0;
+}
+
+entity_t *get_entities(void) {
+    return (entity_t *)&entities;
+}
+
+int get_entities_num(void) {
+    return curr_entities_num;
 }

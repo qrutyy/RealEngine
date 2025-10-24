@@ -1,5 +1,5 @@
-#ifndef ASSET_MANAGER_H
-#define ASSET_MANAGER_H
+#ifndef ASSET_H
+#define ASSET_H
 
 #include <SDL3/SDL.h>
 #include "types.h"
@@ -54,4 +54,4 @@ int RE_assign_asset_static(grid_t *grid, char *key, int layer, int x, int y);
 int RE_init_grid(grid_t *grid, int tile_num_x, int tile_num_y, int tile_width, int tile_height);
 
 
-#endif // ASSET_MANAGER_H
+#endif // ASSET_H
