@@ -208,7 +208,6 @@ static void update_state(app_hlpr_t *app) {
         }
 
         int max_layers_num = app->grid.tile_num_x + app->grid.tile_num_y + 1;
-        max_layers_num *= 10;
         if (depth > max_layers_num) {
             depth = max_layers_num;
         }
@@ -238,9 +237,6 @@ void app_run(app_hlpr_t *app) {
 
 static int init_layers(app_hlpr_t *app) {
     int max_layers_num = app->grid.tile_num_x + app->grid.tile_num_y + 1;
-
-    max_layers_num *= 10; // to avoid errors for now, when out of bound is possible
-    // better to allocate more dynamically when needed
 
     layer_entities_t *layers = malloc(sizeof(layer_entities_t) * max_layers_num);
     if (!layers) {
