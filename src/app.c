@@ -176,7 +176,7 @@ int app_setup(app_hlpr_t *app) {
 }
 
 int RE_init_grid(grid_t *grid, int tile_num_x, int tile_num_y, int tile_width, int tile_height) {
-    SDL_Surface ***tiles;
+    SDL_Surface ***tiles; // fuck yeah
 
     if (!grid) {
         log_debug("Failed to init grid: a grid pointer should not be NULL pointer.\n");

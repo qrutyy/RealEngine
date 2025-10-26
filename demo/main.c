@@ -1,90 +1,62 @@
-#include "engine.h"
+#include "include.h"
 #include "scene.h"
-#include "entity.h"
-#include "tilemap.h"
-#include "input.h"
-#include "event.h"
-#include "camera.h"
-#include "assetmanager.h"
 
-typedef struct PlayerEntity {
-    Entity base;
-    int tile_x;
-    int tile_y;
-} PlayerEntity;
+const int WIDTH = 20;
+const int HEIGHT = 20;
 
-void player_update(Entity *self, float dt) {
-    // Можно добавить анимацию или движение
-}
+const int TILE_WIDTH = 128;
+const int TILE_HEIGHT = 64;
 
-void player_render(Entity *self) {
-    PlayerEntity *p = (PlayerEntity*)self;
-    printf("[Render] Player at tile (%d, %d)\n", p->tile_x, p->tile_y);
-}
+// TODO: move file to the
 
-void player_on_event(Entity *self, const Event *e) {
-    PlayerEntity *p = (PlayerEntity*)self;
+int RE_main(grid_t *grid) {
 
-    if (e->type == EVENT_CLICK) {
-        p->tile_x = e->data.click.x;
-        p->tile_y = e->data.click.y;
-        printf("[Event] Player moved to (%d, %d)\n", p->tile_x, p->tile_y);
+    RE_init_grid(grid, WIDTH, HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+
+    int key = RE_load_asset(
+        "assets/tiles/ScreamingBrainStudios/Isometric_Floor_Tiles_Small_128x64/Small_128x64/Exterior/Grass/Floor_Grass_02-128x64p.png",
+        0, 64, 128, 64
+    );
+
+    int key2 = RE_load_asset(
+        "assets/tiles/ScreamingBrainStudios/Isometric_Floor_Tiles_Small_128x64/Small_128x64/Exterior/Elements/Floor_Elements-01-128x64p.png",
+        128, 128, 128, 64
+    );
+
+    int key3 = RE_load_asset(MAIN_CHAR_IMG_S, MAIN_CHAR_SRC_X, MAIN_CHAR_SRC_Y, MAIN_CHAR_WIDTH, MAIN_CHAR_HEIGHT);
+
+
+    for (int x = 0; x < WIDTH; x++) {
+        for (int y = 0; y < HEIGHT; y++) {
+            // if ((x + y) % 2 == 0) {
+            RE_assign_asset_static(grid, key, 0, x, y);
+            // } else {
+            //     RE_assign_asset_static(grid, key2, 0, x, y);
+            // }
+        }
     }
-}
+    // RE_assign_asset_static(grid, key, 0, 0, 0);
 
-EntityVTable PLAYER_VTABLE = {
-    .update = player_update,
-    .render = player_render,
-    .on_event = player_on_event
-};
+    RE_add_entity(0, 0, PLAYER);
+    // RE_add_entity(4, 5, NPC);
+    // RE_add_entity(2, 10, NPC);
+    // RE_add_entity(2, 10, NPC);
+    // RE_add_entity(2, 10, NPC);
+    // RE_add_entity(2, 10, NPC);
+    // RE_add_entity(2, 10, NPC);
+    // RE_add_entity(2, 10, NPC);
+    // RE_add_entity(2, 10, NPC);
+    // RE_add_entity(2, 10, NPC);
+    // RE_add_entity(2, 10, NPC);
+    // RE_add_entity(2, 10, NPC);
+    // RE_add_entity(2, 10, NPC);
+    // RE_add_entity(2, 10, NPC);
+    // RE_add_entity(0, 1, NPC);
+    // RE_add_entity(0, 2, NPC);
+    // RE_add_entity(0, 0, FOLLOW);
+    // RE_add_entity(2, 10, FOLLOW);
 
-PlayerEntity *player_create(int x, int y) {
-    PlayerEntity *p = malloc(sizeof(PlayerEntity));
-    p->base.vtable = &PLAYER_VTABLE;
-	p->base.position = (Vec2){x, y}; 
-	p->base.sprite =
-	p->base.physics = RE_set_physics(bitmap that will be filled by conjunction of enums);
-	p->base.events = 
-    p->tile_x = x;
-    p->tile_y = y;
-    return p;
-}
-
-void create_map() {
-	tilemap = RE_create_tile_map(num_of_layers, ..);
-	layer = tilemap.init_tile_layer();
-
-	layer.fill(tile, ..);
-	layer.set_tile(position, new_tile, specs);
-	return tilemap;
-} 
-
-int main(void) {
-    Engine engine;
-    Scene scene;
-    InputManager input;
-    Camera camera;
-    AssetManager assets;
-
-    RE_scene_init(&scene, NULL, entities?, layers_meta);
-	scene.map = create_map();
-
-    RE_input_init(&input);
-	input.add_event();
-
-    RE_assetmanager_init(&assets); ???
-
-    RE_engine_init(&engine, &scene, &input, &camera, &assets);
-
-	RE_init_camera()
-
-
-    PlayerEntity *player = player_create() // мы позволяем реализовывать доп обертку поверх entity для добавления функциональности и допустим хранения значений.
-    scene.add_entity(&scene, (Entity*)player);
-
-    // запуск главного цикла
-    engine_run(&engine);
+    // RE_add_entity(0, 1, 0);
 
     return 0;
 }
-
