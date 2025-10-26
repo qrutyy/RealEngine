@@ -4,12 +4,46 @@
 #include "log.h"
 #include "scene.h"
 #include "errors.h"
-#include "camera.h"
 #include "entity.h"
 #include <SDL3/SDL.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
+
+static void cam_process_key_event(SDL_KeyboardEvent kb_event, app_hlpr_t *app, entity_t *player_entity, uint32_t sdl_kb_event_type) {
+    if (sdl_kb_event_type != SDL_EVENT_KEY_DOWN) return;
+
+    cam_t *cam = &app->cam;
+    switch (kb_event.key) {
+        case SDLK_UP:
+            cam->y -= 1;
+            cam->x -= 1;
+            break;
+        case SDLK_DOWN:
+            cam->y += 1;
+            cam->x += 1;
+            break;
+        case SDLK_LEFT:
+            cam->x -= 1;
+            cam->y += 1;
+            break;
+        case SDLK_RIGHT:
+            cam->x += 1;
+            cam->y -= 1;
+            break;
+        default:
+            break;
+    }
+
+    // if you want to move camera out of the map, change here
+    int max_x = app->grid.tile_num_x - 1;
+    int max_y = app->grid.tile_num_y - 1;
+
+    if (cam->x < 0) cam->x = 0;
+    else if (cam->x > max_x) cam->x = max_x;
+    if (cam->y < 0) cam->y = 0;
+    else if (cam->y > max_y) cam->y = max_y;
+}
 
 static void process_input(app_hlpr_t* app) {
     SDL_Event event;
@@ -23,7 +57,7 @@ static void process_input(app_hlpr_t* app) {
 		if (event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_KEY_UP) {
 			if (event.key.key <= SDLK_UP && event.key.key >= SDLK_RIGHT) {
 				app->key_event = event.key;	
-				cam_process_key_event(app->key_event, &app->cam, &app->entities[app->player_ent_id], event.type);
+				cam_process_key_event(app->key_event, app, &app->entities[app->player_ent_id], event.type);
 			}
 		}
     }
@@ -87,10 +121,16 @@ void app_destroy(app_hlpr_t *app) {
     free(app);
 }
 
-void act_entity(entity_t *ent, entity_t player) {
+void act_entity(app_hlpr_t *app, entity_t *ent) {
+    entity_t player = app->entities[app->player_ent_id];
     if (!ent) return;
 
     if (ent->beh == PLAYER) {
+        ent->x = app->cam.x;
+        ent->y = app->cam.y;
+
+    // if (player_entity->x < 0) player_entity->x = 0;
+    // if (player_entity->y < 0) player_entity->y = 0;
         // printf("a player acts like a player.\n");
         // printf("player entity is on x, y: %d, %d\n", ent->x, ent->y);
     } else if (ent->beh == NPC) {
@@ -129,6 +169,14 @@ void act_entity(entity_t *ent, entity_t player) {
         }
         // log_debug("follow entity is on %d, %d", ent->x, ent->y);
     }
+
+    int max_x = app->grid.tile_num_x - 1;
+    int max_y = app->grid.tile_num_y - 1;
+
+    if (ent->x < 0) ent->x = 0;
+    else if (ent->x > max_x) ent->x = max_x;
+    if (ent->y < 0) ent->y = 0;
+    else if (ent->y > max_y) ent->y = max_y;
 }
 
 static inline int get_depth(entity_t *entity) {
@@ -152,7 +200,7 @@ static void update_state(app_hlpr_t *app) {
         // change entities placement somehow
         entity_t *entity = &entities[i];
 
-        act_entity(entity, app->entities[app->player_ent_id]);
+        act_entity(app, entity);
 
         int depth = get_depth(entity);
         if (depth < 1) {
