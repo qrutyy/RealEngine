@@ -23,6 +23,7 @@ typedef struct app_hlpr {
     grid_t grid;
     entity_t *entities;
     int entities_num;
+    int player_ent_id;
     cam_t cam;
     bool is_running;
 } app_hlpr_t ;

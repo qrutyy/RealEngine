@@ -1,6 +1,7 @@
 #include "render.h"
 #include "app.h"
 #include "log.h"
+#include "asset.h"
 #include <stdint.h>
 
 // this should be with other sprites, it's here only temporarily
@@ -47,6 +48,8 @@ void render_background(app_hlpr_t *app) {
             rect_dest.y = sy;
 
             SDL_BlitSurface(image, NULL, screen, &rect_dest);
+
+            // log_debug("%d, %d: load tile %p\n", x, y, image);
         }
     }
     // SDL_DestroySurface(image);
@@ -61,7 +64,7 @@ void render_main_char(app_hlpr_t *app) {
     int TILE_HEIGHT = app->grid.tile_height;
 
     const SDL_Rect rect_src = {MAIN_CHAR_SRC_X, MAIN_CHAR_SRC_Y, MAIN_CHAR_WIDTH, MAIN_CHAR_HEIGHT};
-    SDL_Rect rect_dest = {TILE_WIDTH, TILE_HEIGHT, 0, 0};
+    SDL_Rect rect_dest = {0, 0, 0, 0};
 
     SDL_Surface *image;
 
@@ -94,9 +97,11 @@ void render_main_char(app_hlpr_t *app) {
                 image_s = SDL_LoadPNG(MAIN_CHAR_IMG_S);
             }
             image = image_s;
-            // log_debug("Camera moved down: %d %d", cam->x, cam->y);
+            // log_debug("Camera moved down: %d %d", app->cam.x, app->cam.y);
             break;
     }
+    // log_debug("Camera moved: %d %d", app->cam.x, app->cam.y);
+
 
     if (!image) {
         log_debug("Failed to load main character image.\n");
@@ -104,6 +109,46 @@ void render_main_char(app_hlpr_t *app) {
     }
 
     SDL_BlitSurface(image, &rect_src, screen, &rect_dest);
+}
+
+void render_entities(app_hlpr_t *app) {
+    SDL_Window *window = app->window;
+    SDL_Surface *screen = SDL_GetWindowSurface(window);
+
+    int num = app->entities_num;
+    entity_t *entities = app->entities;
+
+    // need to sort entities by layers. then
+    // for (l in layers) { for (e in layer.entities) } 
+    for (int i = 0; i < num; i++) {
+        // ADD render only if entity is in camera
+
+        entity_t ent = entities[i];
+
+        asset_t *asset = RE_get_asset(2);
+        SDL_Surface *image = asset->img;
+
+        int cam_x = app->cam.x;
+        int cam_y = app->cam.y;
+        int x = ent.x;
+        int y = ent.y;
+        int grid_x = x - cam_x;
+        int grid_y = y - cam_y;
+
+        int TILE_WIDTH = app->grid.tile_width;
+        int TILE_HEIGHT = app->grid.tile_height;
+
+        int sx = (grid_x - grid_y) * (TILE_WIDTH/2) + (OFFSET_X - asset->width / 2);
+        int sy = (grid_x + grid_y) * (TILE_HEIGHT/2);
+
+        SDL_Rect rect = {sx, sy, 0, 0};
+
+        SDL_BlitSurface(image, NULL, screen, &rect);
+
+        for (int j = 0; j < 10000000; j++) {}
+        // log_debug("rendered entity %d in %d, %d", i, ent.x, ent.y);
+    }
+
 }
 
 void render_scene(app_hlpr_t* app) {
@@ -114,6 +159,6 @@ void render_scene(app_hlpr_t* app) {
     // intersect_camera_scene(app);
 
 	render_background(app);
-    // render_main_char(app);
+    render_entities(app);
     SDL_UpdateWindowSurface(app->window);
 }

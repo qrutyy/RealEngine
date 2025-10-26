@@ -23,7 +23,7 @@ static void process_input(app_hlpr_t* app) {
 		if (event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_KEY_UP) {
 			if (event.key.key <= SDLK_UP && event.key.key >= SDLK_RIGHT) {
 				app->key_event = event.key;	
-				cam_process_key_event(app->key_event, &app->cam, event.type);
+				cam_process_key_event(app->key_event, &app->cam, &app->entities[app->player_ent_id], event.type);
 			}
 		}
     }
@@ -87,14 +87,62 @@ void app_destroy(app_hlpr_t *app) {
     free(app);
 }
 
-static void update(void) {
-	// game logic
+void act_entity(entity_t *ent, entity_t player) {
+    if (!ent) return;
+
+    if (ent->beh == PLAYER) {
+        // printf("a player acts like a player.\n");
+    } else if (ent->beh == NPC) {
+        int rand = SDL_rand(4);
+        switch (rand) {
+            case 0:
+                break;
+            case 1:
+                ent->x++;
+            case 2:
+                ent->y++;
+                break;
+            case 3:
+                ent->x--;
+            case 4:
+                ent->y--;
+                break;
+        }
+    } else if (ent->beh == FOLLOW) {
+        int dist = 2;
+        if (player.x - ent->x > dist)  {
+            ent->x++;
+        } else if (ent->x - player.x  > dist) {
+            ent->x--;
+        }
+        if (player.y - ent->y > dist) {
+            ent->y++;
+        } else if (ent->y - player.y > dist) {
+            ent->y--;
+        }
+    }
+}
+
+static void update_state(app_hlpr_t *app) {
+    SDL_Window *window = app->window;
+    SDL_Surface *screen = SDL_GetWindowSurface(window);
+
+    int num = app->entities_num;
+    entity_t *entities = app->entities;
+
+    for (int i = 0; i < num; i++) {
+        // change entities placement somehow
+        act_entity(&entities[i], app->entities[app->player_ent_id]);
+    }
+
+    // shadows, etc
+    // for ()
 }
 
 void app_run(app_hlpr_t *app) {
     while (app->is_running) {
         process_input(app);
-        update();
+        update_state(app);
         render_scene(app);
         // SDL_Delay(16);
     }
@@ -109,6 +157,7 @@ static int setup_player(app_hlpr_t *app) {
     for (int i = 0; i < app->entities_num; i++) {
         entity_t ent = app->entities[i];
         if (ent.beh == PLAYER) {
+            app->player_ent_id = i;
             app->cam.x = ent.x;
             app->cam.y = ent.y;
             return 0;

@@ -20,8 +20,11 @@ int main(int argc, char *argv[]) {
     user_function(&app->grid);
 
     int err = app_setup(app);
-    if (err) app_destroy(app);
-
+    if (err) {
+        app_destroy(app);
+        return err;
+    }
+        
     app_run(app);
 
     app_destroy(app);

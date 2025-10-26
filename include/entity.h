@@ -1,6 +1,8 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+#include "asset.h"
+
 #define MAX_ENTITIES_NUM 1000
 
 /*
@@ -8,7 +10,8 @@
 */
 enum e_behaviour {
     PLAYER = 0,
-    NPC = 1
+    NPC = 1,
+    FOLLOW = 2,
     // these should be more precise, to be added
 };
 
@@ -19,7 +22,9 @@ typedef struct entity {
     int x;
     int y;
     int depth;
+    int asset_id;
     enum e_behaviour beh;
+    asset_t *asset;
 } entity_t;
 
 int RE_add_entity(int x, int y, enum e_behaviour beh);

@@ -4,6 +4,14 @@
 #include <SDL3/SDL.h>
 #include "types.h"
 
+#define MAX_ASSETS_NUM 1000
+
+typedef struct asset {
+    SDL_Surface *img;
+    int width;
+    int height;
+} asset_t;
+
 /*
     Load asset from memory and store it into map.
 
@@ -13,32 +21,32 @@
     @param width width of an asset.
     @param height height of an asset.
 
-    @returns a key to asset on success, NULL on error.
+    @returns an id of loaded asset on success, -1 otherwise.
 */
-char *RE_load_asset(char *filename, int src_x, int src_y, int width, int height);
+int RE_load_asset(char *filename, int src_x, int src_y, int width, int height);
 
 /*
-    Get asset via associated key.
+    Get asset via id.
 
-    @param key a key returned by `RE_load_asset`.
+    @param id an id of loaded asset.
 
-    @returns a pointer to asset if key is associated with some asset, NULL otherwise.
+    @returns a pointer to asset if id is associated with some asset, NULL otherwise.
 */
-SDL_Surface *RE_get_asset(char *key);
+asset_t *RE_get_asset(int id);
 
 // works only for tiles?
 /*
     Assign asset to a static object.
 
     @param grid a grid handle.
-    @param key a key associated with some asset.
+    @param if an id of loaded asset.
     @param layer TODO
     @param x x of a tile on which to add static object.
     @param y y of a tile on which to add static object.
 
     @returns 0 on success, error code otherwise.
 */
-int RE_assign_asset_static(grid_t *grid, char *key, int layer, int x, int y);
+int RE_assign_asset_static(grid_t *grid, int id, int layer, int x, int y);
 
 /*
     Initialize game grid.

@@ -2,6 +2,7 @@
 #include "entity.h"
 #include "log.h"
 #include "errors.h"
+#include "asset.h"
 
 static entity_t entities[MAX_ENTITIES_NUM];
 
@@ -17,15 +18,23 @@ int RE_add_entity(int x, int y, enum e_behaviour beh) {
         for (int i = 0; i < curr_entities_num; i++) {
             if (entities[i].beh == 0) {
                 log_error("Cannot add more than one player.\n");
-                return ERR_ARGS;
+                return -1;
             }
         }
     }
-    entities[curr_entities_num++] = ent;
 
-    log_debug("Added entity with behaviour %d on (%d, %d)\n", beh, x, y);
+    ent.asset_id = 0;
+    int id = curr_entities_num++;
+    entities[id] = ent;
 
-    return 0;
+    char *ent_name;
+    if (beh == PLAYER)
+        ent_name = "player";
+    else
+        ent_name = "unknown";
+    log_debug("Added entity with behaviour %s on (%d, %d) with id %d\n", ent_name, x, y, id);
+
+    return id;
 }
 
 entity_t *get_entities(void) {

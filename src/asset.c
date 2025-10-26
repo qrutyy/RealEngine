@@ -6,126 +6,51 @@
 #include <stdlib.h>
 #include <SDL3/SDL.h>
 
-#define HASHTABLE_MAX_SIZE 1000
-#define MAX_KEY_LEN 300
+static asset_t assets[MAX_ASSETS_NUM];
 
-static struct asset {
-    char *key;
-    SDL_Surface *img;
-};
-typedef struct asset asset_h;
+static int curr_assets_num;
 
-// storing structs directly would be faster
-static asset_h *assets[HASHTABLE_MAX_SIZE];
-
-static asset_h *create_asset(char *key, SDL_Surface *img) {
-    asset_h *asset = malloc(sizeof(asset_h));
-
-    asset->img = img;
-    asset->key = key;
-
-    return asset;
-}
-
-static void destroy_asset(asset_h *asset) {
-    if (asset != NULL) free(asset);
-}
-
-static asset_h *hashtable_get(char *key) {
-    unsigned int hash = hashf(key);
-
-    asset_h *asset = assets[hash % HASHTABLE_MAX_SIZE];
-
-    return asset;
-}
-
-static asset_h *hashtable_add(char *key, SDL_Surface *img) {
-    asset_h *asset = hashtable_get(key);
-    if (asset) {
-        return asset;
+int RE_load_asset(char *filename, int src_x, int src_y, int width, int height) {
+    if (curr_assets_num >= MAX_ASSETS_NUM) {
+        log_debug("Cannot load asset, reached maximum assets num: %d.\n", MAX_ASSETS_NUM);
+        return -1;
     }
 
-    unsigned int hash = hashf(key);
-    // log_debug(" key: %s\n hash: %u\n", key, hash);
-
-    asset = create_asset(key, img);
-    if (!asset) {
-        log_error("Failed to create asset for image with key %s\n", key);
-        return NULL;
-    }
-    assets[hash % HASHTABLE_MAX_SIZE] = asset;
-
-    return asset;
-}
-
-char *RE_load_asset(char *filename, int src_x, int src_y, int width, int height) {
-    char asset_keya[MAX_KEY_LEN];
-    snprintf(asset_keya, MAX_KEY_LEN, "%s,%d,%d,%d,%d", filename, src_x, src_y, width, height);
-
-    asset_h *asset = hashtable_get(asset_keya);
-    if (asset) {
-        return asset->key;
-    }
-
-    asset_h *full = hashtable_get(filename);
-    if (!full) {
-        SDL_Surface *full_image = SDL_LoadPNG(filename);
-        if (!full_image) {
-            log_error("Asset %s not found.\n", filename);
-            return NULL;
-        }
-        full = hashtable_add(filename, full_image);
-        if (!full) {
-            return NULL;
-        }
-        // log_debug("Loaded asset from %s with key %s\n", filename, filename);
-
-    }
-
-    char *asset_key = malloc(MAX_KEY_LEN);
-        if (!asset_key) {
-        log_error("Failed to allocate memory for asset %s key.\n", filename);
-        return NULL;
-    }
-
-    strncpy(asset_key, asset_keya, MAX_KEY_LEN);
-
-    SDL_Surface *image;
-    image = SDL_CreateSurface(width, height, full->img->format);
-    if (!image) {
-        log_error("Failed to create asset of width %d and height %d.\n", width, height);
-        free(asset_key);
-        return NULL;
-    }
+    SDL_Surface *src_asset_img = SDL_LoadPNG(filename);
+    SDL_Surface *asset_img = SDL_CreateSurface(width, height, src_asset_img->format);
 
     const SDL_Rect rect = {src_x, src_y, width, height};
-    int ret = SDL_BlitSurface(full->img, &rect, image, NULL);
+    int ret = SDL_BlitSurface(src_asset_img, &rect, asset_img, NULL);
     if (!ret) {
         log_error("Failed to extract asset from image %s with specified parameters.\n", filename);
-        SDL_DestroySurface(image);
-        free(asset_key);
+        return -1;
+    }
+    SDL_DestroySurface(src_asset_img);
+
+    int id = curr_assets_num++;
+
+    asset_t asset = {.img = asset_img, .width = width, .height = height};
+    assets[id] = asset;
+
+    log_debug("Loaded asset from %s with id %d\n", filename, id);
+
+    return id;
+}
+
+asset_t *RE_get_asset(int id) {
+    if (id > MAX_ASSETS_NUM) {
+        log_debug("%d exceeds maximum assets num %d.\n", id, MAX_ASSETS_NUM);
         return NULL;
     }
-
-    asset = hashtable_add(asset_key, image);
-
-    // log_debug("Loaded asset from %s with key %s\n", filename, asset->key);
-
-    return asset->key;
+    return &assets[id];
 }
 
-SDL_Surface *RE_get_asset(char *key) {
-    asset_h *asset = hashtable_get(key);
-    if (asset) return asset->img;
-    return NULL;
-}
-
-int RE_assign_asset_static(grid_t *grid, char *key, int layer, int x, int y) {
-    asset_h *asset = hashtable_get(key);
-    if (!asset) {
-        log_error("Asset with key %s was not loaded\n", key);
-        return ERR_ASSET_NOT_LOADED;
+int RE_assign_asset_static(grid_t *grid, int id, int layer, int x, int y) {
+    if (id > MAX_ASSETS_NUM) {
+        log_debug("%d exceeds maximum assets num %d.\n", id, MAX_ASSETS_NUM);
+        return ERR_ARGS;
     }
+    asset_t asset = assets[id];
 
     int width = grid->tile_num_x;
     int height = grid->tile_num_y;
@@ -138,7 +63,7 @@ int RE_assign_asset_static(grid_t *grid, char *key, int layer, int x, int y) {
         log_error("Error: y = %d exceeds scene height: %d\n", y, height);
         return ERR_ARGS;
     }
-    grid->tiles[x][y] = asset->img;
+    grid->tiles[x][y] = asset.img;
 
     return 0;
 }

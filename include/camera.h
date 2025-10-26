@@ -5,6 +5,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-void cam_process_key_event(SDL_KeyboardEvent kb_event, cam_t *cam, uint32_t sdl_kb_event_type);
+void cam_process_key_event(SDL_KeyboardEvent kb_event, cam_t *cam, entity_t *player_entity, uint32_t sdl_kb_event_type);
 
 #endif // CAMERA_H
