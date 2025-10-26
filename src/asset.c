@@ -17,7 +17,15 @@ int RE_load_asset(char *filename, int src_x, int src_y, int width, int height) {
     }
 
     SDL_Surface *src_asset_img = SDL_LoadPNG(filename);
+	if (!src_asset_img) {
+		log_error("Failed to load PNG\n");
+		return -1;
+	}
     SDL_Surface *asset_img = SDL_CreateSurface(width, height, src_asset_img->format);
+	if (!asset_img) {
+		log_error("Failed to create surface\n");
+		return -1;
+	}
 
     const SDL_Rect rect = {src_x, src_y, width, height};
     int ret = SDL_BlitSurface(src_asset_img, &rect, asset_img, NULL);
@@ -26,6 +34,10 @@ int RE_load_asset(char *filename, int src_x, int src_y, int width, int height) {
         return -1;
     }
     SDL_DestroySurface(src_asset_img);
+	if (!asset_img) {
+		log_error("Failed to delete surface\n");
+		return -1;
+	}
 
     int id = curr_assets_num++;
 
