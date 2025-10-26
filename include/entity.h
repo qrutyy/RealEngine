@@ -32,3 +32,4 @@ entity_t *get_entities(void);
 int get_entities_num(void);
 
 #endif // ENTITY_H
+

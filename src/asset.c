@@ -1,4 +1,5 @@
 #include "asset.h"
+#include "SDL3/SDL_pixels.h"
 #include "log.h"
 #include "asset.h"
 #include "errors.h"
@@ -18,26 +19,28 @@ int RE_load_asset(char *filename, int src_x, int src_y, int width, int height) {
 
     SDL_Surface *src_asset_img = SDL_LoadPNG(filename);
 	if (!src_asset_img) {
-		log_error("Failed to load PNG\n");
+		log_error("Failed to load PNG: %s\n", SDL_GetError());
 		return -1;
 	}
-    SDL_Surface *asset_img = SDL_CreateSurface(width, height, src_asset_img->format);
+    
+    // Create surface with RGBA32 format for better compatibility
+    SDL_Surface *asset_img = SDL_CreateSurface(width, height, SDL_PIXELFORMAT_RGBA32);
 	if (!asset_img) {
-		log_error("Failed to create surface\n");
+		log_error("Failed to create surface: %s\n", SDL_GetError());
+		SDL_DestroySurface(src_asset_img);
 		return -1;
 	}
+	SDL_Palette *palette = SDL_CreateSurfacePalette(asset_img);
 
     const SDL_Rect rect = {src_x, src_y, width, height};
     int ret = SDL_BlitSurface(src_asset_img, &rect, asset_img, NULL);
-    if (!ret) {
-        log_error("Failed to extract asset from image %s with specified parameters.\n", filename);
+    if (ret != 0) {
+        log_error("Failed to extract asset from image %s with specified parameters: %s\n", filename, SDL_GetError());
+        SDL_DestroySurface(src_asset_img);
+        SDL_DestroySurface(asset_img);
         return -1;
     }
     SDL_DestroySurface(src_asset_img);
-	if (!asset_img) {
-		log_error("Failed to delete surface\n");
-		return -1;
-	}
 
     int id = curr_assets_num++;
 

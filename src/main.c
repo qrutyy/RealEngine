@@ -1,12 +1,10 @@
 #include "app.h"
 #include "scene.h"
 #include "asset.h"
-#include "include.h"
 #include "log.h"
 #include <stdlib.h>
 
-
-int RE_main(grid_t *grid);
+extern int RE_main(grid_t *grid);
 
 int main(int argc, char *argv[]) {
 	int err;

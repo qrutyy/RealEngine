@@ -15,6 +15,7 @@ add_subdirectory(lib/SDL EXCLUDE_FROM_ALL)
 file(GLOB SOURCES
     "src/*.c"
     "lib/*.c"
+    "demo/*.c"
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})

@@ -63,3 +63,4 @@ int RE_init_grid(grid_t *grid, int tile_num_x, int tile_num_y, int tile_width, i
 
 
 #endif // ASSET_H
+

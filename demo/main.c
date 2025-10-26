@@ -1,5 +1,6 @@
 #include "include.h"
 #include "scene.h"
+#include "log.h"
 
 const int WIDTH = 20;
 const int HEIGHT = 20;

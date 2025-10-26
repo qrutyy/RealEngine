@@ -161,4 +161,5 @@ void render_scene(app_hlpr_t* app) {
 	render_background(app);
     render_entities(app);
     SDL_UpdateWindowSurface(app->window);
+	printf("%s\n", SDL_GetError());
 }
