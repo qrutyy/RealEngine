@@ -21,12 +21,14 @@ typedef struct app_hlpr {
     SDL_KeyboardEvent key_event;
     SDL_Window* window;
     grid_t grid;
+    layer_entities_t *lentities;
+    int layers_num;
     entity_t *entities;
     int entities_num;
     int player_ent_id;
     cam_t cam;
     bool is_running;
-} app_hlpr_t ;
+} app_hlpr_t;
 
 app_hlpr_t* app_create(void);
 void app_destroy(app_hlpr_t* app);

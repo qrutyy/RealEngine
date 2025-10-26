@@ -92,6 +92,7 @@ void act_entity(entity_t *ent, entity_t player) {
 
     if (ent->beh == PLAYER) {
         // printf("a player acts like a player.\n");
+        // printf("player entity is on x, y: %d, %d\n", ent->x, ent->y);
     } else if (ent->beh == NPC) {
         int rand = SDL_rand(4);
         switch (rand) {
@@ -99,12 +100,18 @@ void act_entity(entity_t *ent, entity_t player) {
                 break;
             case 1:
                 ent->x++;
+                ent->y++;
+                break;
             case 2:
+                ent->x--;
                 ent->y++;
                 break;
             case 3:
-                ent->x--;
+                ent->x++;
+                ent->y--;
+                break;
             case 4:
+                ent->x--;
                 ent->y--;
                 break;
         }
@@ -120,7 +127,12 @@ void act_entity(entity_t *ent, entity_t player) {
         } else if (ent->y - player.y > dist) {
             ent->y--;
         }
+        // log_debug("follow entity is on %d, %d", ent->x, ent->y);
     }
+}
+
+static inline int get_depth(entity_t *entity) {
+    return entity->x + entity->y + 1;
 }
 
 static void update_state(app_hlpr_t *app) {
@@ -130,9 +142,37 @@ static void update_state(app_hlpr_t *app) {
     int num = app->entities_num;
     entity_t *entities = app->entities;
 
+    layer_entities_t *layers = app->lentities;
+
+    for (int i = 0; i < app->layers_num; i++) {
+        app->lentities[i].num_entities = 0;
+    }
+
     for (int i = 0; i < num; i++) {
         // change entities placement somehow
-        act_entity(&entities[i], app->entities[app->player_ent_id]);
+        entity_t *entity = &entities[i];
+
+        act_entity(entity, app->entities[app->player_ent_id]);
+
+        int depth = get_depth(entity);
+        if (depth < 1) {
+            depth = 1;
+        }
+
+        int max_layers_num = app->grid.tile_num_x + app->grid.tile_num_y + 1;
+        max_layers_num *= 10;
+        if (depth > max_layers_num) {
+            depth = max_layers_num;
+        }
+
+        entity->depth = depth;
+
+        // this updates location in memory
+
+        int num_entities = app->lentities[depth].num_entities++;
+        app->lentities[depth].entities[num_entities] = *entity;
+
+        // log_debug("entity %d x,y: %d, %d, depth: %d", i, entity.x, entity.y, depth);
     }
 
     // shadows, etc
@@ -148,9 +188,53 @@ void app_run(app_hlpr_t *app) {
     }
 }
 
+static int init_layers(app_hlpr_t *app) {
+    int max_layers_num = app->grid.tile_num_x + app->grid.tile_num_y + 1;
+
+    max_layers_num *= 10; // to avoid errors for now, when out of bound is possible
+    // better to allocate more dynamically when needed
+
+    layer_entities_t *layers = malloc(sizeof(layer_entities_t) * max_layers_num);
+    if (!layers) {
+        log_debug("Failed to init layers\n");
+        return ERR_NOMEM;
+    }
+
+    for (int l = 0; l < max_layers_num; l++) {
+        entity_t *entities = malloc(sizeof(entity_t) * MAX_ENTITIES_PER_LAYER);
+        layers[l].num_entities = 0;
+        layers[l].entities = entities;
+        if (!entities) {
+            log_error("Failed to allocate memory for entities on layer %d.\n", l);
+
+            for (int j = 0; j < l; j++) {
+                free(layers[j].entities);
+            }
+            free(layers);
+            return ERR_NOMEM;
+        }
+    }
+
+    for (int i = 0; i < app->entities_num; i++) {
+        entity_t entity = app->entities[i];
+        int depth = get_depth(&entity);
+        layer_entities_t *layer = &layers[depth];
+
+        layer->entities[layer->num_entities++] = entity;
+        // log_debug("put entity %d to depth %d", i, depth);
+    }
+
+    app->lentities = layers;
+    app->layers_num = max_layers_num;
+    // log_debug("initialized %d layers.", max_layers_num);
+
+    return 0;
+}
+
 static void add_entities(app_hlpr_t *app) {
     app->entities = get_entities();
     app->entities_num = get_entities_num();
+    init_layers(app);
 }
 
 static int setup_player(app_hlpr_t *app) {

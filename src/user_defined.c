@@ -34,24 +34,24 @@ int user_function(grid_t *grid) {
     }
     // RE_assign_asset_static(grid, key, 0, 0, 0);
 
-    RE_add_entity(0, 0, PLAYER);
+    RE_add_entity(0, 1, PLAYER);
     // RE_add_entity(4, 5, NPC);
-    // RE_add_entity(2, 10, NPC);
-    // RE_add_entity(2, 10, NPC);
-    // RE_add_entity(2, 10, NPC);
-    // RE_add_entity(2, 10, NPC);
-    // RE_add_entity(2, 10, NPC);
-    // RE_add_entity(2, 10, NPC);
-    // RE_add_entity(2, 10, NPC);
-    // RE_add_entity(2, 10, NPC);
-    // RE_add_entity(2, 10, NPC);
-    // RE_add_entity(2, 10, NPC);
-    // RE_add_entity(2, 10, NPC);
-    // RE_add_entity(2, 10, NPC);
+    // RE_add_entity(0, 0, NPC);
+    RE_add_entity(2, 0, NPC);
+    RE_add_entity(2, 0, NPC);
+    RE_add_entity(2, 10, NPC);
+    RE_add_entity(2, 10, NPC);
+    RE_add_entity(2, 10, NPC);
+    RE_add_entity(2, 2, NPC);
+    RE_add_entity(2, 10, NPC);
+    RE_add_entity(2, 10, NPC);
+    RE_add_entity(2, 10, NPC);
+    RE_add_entity(2, 10, NPC);
+    RE_add_entity(2, 10, NPC);
     // RE_add_entity(0, 1, NPC);
     // RE_add_entity(0, 2, NPC);
-    // RE_add_entity(0, 0, FOLLOW);
-    // RE_add_entity(2, 10, FOLLOW);
+    // RE_add_entity(0, 1, FOLLOW);
+    RE_add_entity(2, 10, FOLLOW);
 
     // RE_add_entity(0, 1, 0);
 

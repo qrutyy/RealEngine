@@ -32,7 +32,7 @@ int RE_add_entity(int x, int y, enum e_behaviour beh) {
         ent_name = "player";
     else
         ent_name = "unknown";
-    log_debug("Added entity with behaviour %s on (%d, %d) with id %d\n", ent_name, x, y, id);
+    // log_debug("Added entity with behaviour %s on (%d, %d) with id %d\n", ent_name, x, y, id);
 
     return id;
 }

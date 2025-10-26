@@ -4,6 +4,7 @@
 #include "asset.h"
 
 #define MAX_ENTITIES_NUM 1000
+#define MAX_ENTITIES_PER_LAYER 100
 
 /*
     A number specifying entity's behaviour.
@@ -26,6 +27,14 @@ typedef struct entity {
     enum e_behaviour beh;
     asset_t *asset;
 } entity_t;
+
+/*
+    A structure representing all entities in the layer i.
+*/
+typedef struct layer_entities {
+    entity_t *entities;
+    int num_entities;
+} layer_entities_t;
 
 int RE_add_entity(int x, int y, enum e_behaviour beh);
 entity_t *get_entities(void);

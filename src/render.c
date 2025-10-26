@@ -57,43 +57,50 @@ void render_entities(app_hlpr_t *app) {
     int num = app->entities_num;
     entity_t *entities = app->entities;
 
+    int layers_num = app->layers_num;
+    layer_entities_t *layers = app->lentities;
+
     int TILE_WIDTH = app->grid.tile_width;
     int TILE_HEIGHT = app->grid.tile_height;
 
     // need to sort entities by layers. then
     // for (l in layers) { for (e in layer.entities) } 
-    for (int i = 0; i < num; i++) {
+    // for (int i = 0; i < num; i++) {
         // TODO: render only if entity is in camera
 
-        entity_t ent = entities[i];
+    for (int l = 0; l < layers_num; l++) {
+        for (int i = 0; i < layers[l].num_entities; i++) {
 
-        asset_t *asset = RE_get_asset(2);
-        int asset_h = asset->height;
-        int asset_w = asset->width;
-        SDL_Surface *image = asset->img;
+            // entity_t ent = entities[i];
 
-        int cam_x = app->cam.x;
-        int cam_y = app->cam.y;
-        int x = ent.x;
-        int y = ent.y;
-        int grid_x = x - cam_x;
-        int grid_y = y - cam_y;
+            entity_t ent = layers[l].entities[i];
 
-        int sx = (grid_x - grid_y) * (TILE_WIDTH/2) + WINDOW_WIDTH/2 - asset_w/2;
-        int sy = (grid_x + grid_y) * (TILE_HEIGHT/2) + WINDOW_HEIGHT/2 - asset_h/2;
+            asset_t *asset = RE_get_asset(2);
+            int asset_h = asset->height;
+            int asset_w = asset->width;
+            SDL_Surface *image = asset->img;
 
-        int TILE_WIDTH = app->grid.tile_width;
-        int TILE_HEIGHT = app->grid.tile_height;
+            int cam_x = app->cam.x;
+            int cam_y = app->cam.y;
+            int x = ent.x;
+            int y = ent.y;
+            int grid_x = x - cam_x;
+            int grid_y = y - cam_y;
 
-        // int sx = (grid_x - grid_y) * (TILE_WIDTH/2) + (OFFSET_X - asset->width / 2);
-        // int sy = (grid_x + grid_y) * (TILE_HEIGHT/2);
+            int sx = (grid_x - grid_y) * (TILE_WIDTH/2) + WINDOW_WIDTH/2 - asset_w/2;
+            int sy = (grid_x + grid_y) * (TILE_HEIGHT/2) + WINDOW_HEIGHT/2 - asset_h/2;
 
-        SDL_Rect rect = {sx, sy, 0, 0};
+            int TILE_WIDTH = app->grid.tile_width;
+            int TILE_HEIGHT = app->grid.tile_height;
 
-        SDL_BlitSurface(image, NULL, screen, &rect);
+            // int sx = (grid_x - grid_y) * (TILE_WIDTH/2) + (OFFSET_X - asset->width / 2);
+            // int sy = (grid_x + grid_y) * (TILE_HEIGHT/2);
 
-        for (int j = 0; j < 10000000; j++) {}
-        // log_debug("rendered entity %d in %d, %d", i, ent.x, ent.y);
+            SDL_Rect rect = {sx, sy, 0, 0};
+
+            SDL_BlitSurface(image, NULL, screen, &rect);
+            // log_debug("rendered entity %d in %d, %d", i, ent.x, ent.y);
+        }
     }
 
 }
