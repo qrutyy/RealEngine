@@ -113,9 +113,22 @@ static void destroy_grid(grid_t *grid) {
     log_debug("Destroyed grid.\n");
 }
 
+static void destroy_layers(layer_entities_t *layers, int layers_num) {
+    for (int l = 0; l < layers_num; l++) {
+        if (&layers[l] && layers[l].entities) {
+            free(layers[l].entities);
+        }
+    }
+
+    free(layers);
+
+    log_debug("Destoyed layers.\n");
+}
+
 void app_destroy(app_hlpr_t *app) {
     if (!app) return;
     destroy_grid(&app->grid);
+    destroy_layers(app->lentities, app->layers_num);
     SDL_DestroyWindow(app->window);
     SDL_Quit();
     free(app);
