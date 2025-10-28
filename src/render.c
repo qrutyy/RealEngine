@@ -2,6 +2,7 @@
 #include "app.h"
 #include "log.h"
 #include "asset.h"
+#include "utils.h"
 #include <stdint.h>
 
 void render_asset(SDL_Surface *screen, int sx, int sy, asset_t *asset) {
@@ -45,13 +46,28 @@ void render_asset(SDL_Surface *screen, int sx, int sy, asset_t *asset) {
             Uint32 *asset_pxl = (Uint32*) ((Uint8 *) img->pixels + tile_y * img->pitch + tile_x * bytes_per_pxl);
             // *screen_pxl = *new_pixel;
 
-            Uint8 r, g, b, a;
+            Uint8 ar, ag, ab, aa;
 
-            const SDL_PixelFormatDetails *format = SDL_GetPixelFormatDetails(img->format);
-            SDL_GetRGBA(*asset_pxl, format, NULL, &r, &g, &b, &a);
+            const SDL_PixelFormatDetails *aformat = SDL_GetPixelFormatDetails(img->format);
+            SDL_GetRGBA(*asset_pxl, aformat, NULL, &ar, &ag, &ab, &aa);
             
-            if (a > 0) {
+            //     *screen_pxl = *asset_pxl;
+            // }
+            if (aa == 255) {
                 *screen_pxl = *asset_pxl;
+            } else if (aa > 0) {
+                Uint8 sr, sg, sb;
+                const SDL_PixelFormatDetails *sformat = SDL_GetPixelFormatDetails(screen->format);
+                
+                SDL_GetRGB(*screen_pxl, sformat, NULL, &sr, &sg, &sb);
+
+                float norm_aa = aa / 255.0f;
+
+                Uint8 r = MIN(255, sr + ar * norm_aa);
+                Uint8 g = MIN(255, sg + ag * norm_aa);
+                Uint8 b = MIN(255, sb + ab * norm_aa);
+                
+                *screen_pxl = SDL_MapRGB(sformat, NULL, r, g, b);
             }
         }
     }
