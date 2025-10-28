@@ -179,7 +179,9 @@ void render_entities(app_hlpr_t *app) {
 
             entity_t ent = layers[l].entities[i];
 
-            asset_t *asset = RE_get_asset(2);
+            // asset_t *asset = RE_get_asset(2);
+            animation_t anim = ent.animations[ent.curr_animation];
+            asset_t *asset = &anim.assets[anim.curr_asset];
             if (!asset) {
                 continue;
             }

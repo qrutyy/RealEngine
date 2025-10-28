@@ -138,14 +138,12 @@ void act_entity(app_hlpr_t *app, entity_t *ent) {
     entity_t player = app->entities[app->player_ent_id];
     if (!ent) return;
 
+    int old_x = ent->x;
+    int old_y = ent->y;
+
     if (ent->beh == PLAYER) {
         ent->x = app->cam.x;
         ent->y = app->cam.y;
-
-    // if (player_entity->x < 0) player_entity->x = 0;
-    // if (player_entity->y < 0) player_entity->y = 0;
-        // printf("a player acts like a player.\n");
-        // printf("player entity is on x, y: %d, %d\n", ent->x, ent->y);
     } else if (ent->beh == NPC) {
         int rand = SDL_rand(4);
         switch (rand) {
@@ -169,7 +167,7 @@ void act_entity(app_hlpr_t *app, entity_t *ent) {
                 break;
         }
     } else if (ent->beh == FOLLOW) {
-        int dist = 2;
+        int dist = 1;
         if (player.x - ent->x > dist)  {
             ent->x++;
         } else if (ent->x - player.x  > dist) {
@@ -180,7 +178,17 @@ void act_entity(app_hlpr_t *app, entity_t *ent) {
         } else if (ent->y - player.y > dist) {
             ent->y--;
         }
-        // log_debug("follow entity is on %d, %d", ent->x, ent->y);
+    }
+
+    // temporary
+    if (ent->x > old_x && ent->y > old_y) {
+        ent->curr_animation = 0;
+    } else if (ent->x < old_x && ent->y > old_y) {
+        ent->curr_animation = 1;
+    } else if (ent->x < old_x && ent-> y < old_y) {
+        ent->curr_animation = 2;
+    } else if (ent->x > old_x && ent->y < old_y) {
+        ent->curr_animation = 3;
     }
 
     int max_x = app->grid.tile_num_x - 1;
@@ -190,6 +198,7 @@ void act_entity(app_hlpr_t *app, entity_t *ent) {
     else if (ent->x > max_x) ent->x = max_x;
     if (ent->y < 0) ent->y = 0;
     else if (ent->y > max_y) ent->y = max_y;
+
 }
 
 static inline int get_depth(entity_t *entity) {

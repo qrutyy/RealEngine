@@ -50,7 +50,7 @@ int RE_add_animation(int animation_id, int entity_id) {
     entity_t *entities = get_entities();
 
     // printf("anim num: %d\n", anim_num);
-    
+
     int anim_num = (&entities[entity_id])->animations_num++;
     (&entities[entity_id])->animations[anim_num] = animations[animation_id];
 
