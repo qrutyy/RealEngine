@@ -1,88 +1,118 @@
 #include "render.h"
 #include "app.h"
+#include "log.h"
+#include "asset.h"
 #include <stdint.h>
 
-void render_draw_player(app_hlpr_t *app) {
-    world_t *world = app->world;
-    float zoom = world->cam_zoom;
-    int cam_x = world->cam_pos.x;
-    int cam_y = world->cam_pos.y;
-    int tile_x = world->pl_pos.x - cam_x;
-    int tile_y = world->pl_pos.y - cam_y;
-    int sx = (tile_x - tile_y) * TILE_WIDTH_HALF * zoom + OFFSET_X;
-    int sy = (tile_x + tile_y) * TILE_HEIGHT_HALF * zoom + OFFSET_Y;
-    SDL_FPoint points[5] = {
-        { (float)sx, (float)(sy + TILE_HEIGHT_HALF * zoom) },
-        { (float)(sx + TILE_WIDTH_HALF * zoom), (float)sy },
-        { (float)sx, (float)(sy - TILE_HEIGHT_HALF * zoom) },
-        { (float)(sx - TILE_WIDTH_HALF * zoom), (float)sy },
-        { (float)sx, (float)(sy + TILE_HEIGHT_HALF * zoom) }
-    };
-    SDL_SetRenderDrawColor(app->renderer, 255, 100, 30, 255);
-    SDL_RenderLines(app->renderer, points, 5);
-}
+void render_background(app_hlpr_t *app) {
+    SDL_Window *window = app->window;
+    SDL_Surface *screen = SDL_GetWindowSurface(window);
+    
+    int TILE_WIDTH = app->grid.tile_width;
+    int TILE_HEIGHT = app->grid.tile_height;
 
+    int cam_x = app->cam.x;
+    int cam_y = app->cam.y;
 
-// Draw grid (with zoom/camera offset adjustment)
-void render_draw_grid(app_hlpr_t *app) {
-    world_t *world = app->world;
-    float zoom = world->cam_zoom; // TODO: fix zoom feature
-    int cam_x = world->cam_pos.x;
-    int cam_y = world->cam_pos.y;
+    // light blue for sky
+    Uint32 color = SDL_MapSurfaceRGB(screen, 144, 213, 255);
+    SDL_FillSurfaceRect(screen, NULL, color);
 
-    for (int y = 0; y < GRID_HEIGHT; ++y) {
-        for (int x = 0; x < GRID_WIDTH; ++x) {
+    if (!app->grid.tiles) {
+        log_debug("NO TILES!\n");
+        return;
+    }
+
+    int width = app->grid.tile_num_x;
+    int height = app->grid.tile_num_y;
+
+    int screen_center_x = screen->w / 2;
+    int screen_center_y = screen->h / 2;
+
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            SDL_Surface *image = app->grid.tiles[x][y];
+            if (!image) {
+                continue;
+            }
+
             int grid_x = x - cam_x;
             int grid_y = y - cam_y;
-            int sx = (grid_x - grid_y) * TILE_WIDTH_HALF * zoom + OFFSET_X;
-            int sy = (grid_x + grid_y) * TILE_HEIGHT_HALF * zoom + OFFSET_Y;
-            SDL_FPoint points[5] = {
-                { (float)sx, (float)(sy + TILE_HEIGHT_HALF * zoom) },
-                { (float)(sx + TILE_WIDTH_HALF * zoom), (float)sy },
-                { (float)sx, (float)(sy - TILE_HEIGHT_HALF * zoom) },
-                { (float)(sx - TILE_WIDTH_HALF * zoom), (float)sy },
-                { (float)sx, (float)(sy + TILE_HEIGHT_HALF * zoom) }
-            };
-            SDL_SetRenderDrawColor(app->renderer, 100, 120, 150, 255);
-            SDL_RenderLines(app->renderer, points, 5);
+            int sx = (grid_x - grid_y) * (TILE_WIDTH/2) + WINDOW_WIDTH/2 - TILE_WIDTH/2;
+            int sy = (grid_x + grid_y) * (TILE_HEIGHT/2) + WINDOW_HEIGHT/2 - TILE_HEIGHT/2;
+
+            SDL_Rect rect_dest = {sx, sy, TILE_WIDTH, TILE_HEIGHT};
+
+            SDL_BlitSurface(image, NULL, screen, &rect_dest);
+
+            // log_debug("load tile on x,y: %d, %d\n", sx, sy);
         }
     }
 }
 
-void render_fps_bar(app_hlpr_t *app, uint64_t now) {
-    static uint64_t last_update = 0;
-    static int frame_count = 0;
-    static int current_fps = 0;
-    char debug_string[32];
-    float prevScaleX, prevScaleY;
+void render_entities(app_hlpr_t *app) {
+    SDL_Window *window = app->window;
+    SDL_Surface *screen = SDL_GetWindowSurface(window);
 
-    ++frame_count;
-    if (now - last_update > 1000000000) { // 1 second in nanoseconds
-        current_fps = frame_count;
-        frame_count = 0;
-        last_update = now;
+    int num = app->entities_num;
+    entity_t *entities = app->entities;
+
+    int layers_num = app->layers_num;
+    layer_entities_t *layers = app->lentities;
+
+    int TILE_WIDTH = app->grid.tile_width;
+    int TILE_HEIGHT = app->grid.tile_height;
+
+    // need to sort entities by layers. then
+    // for (l in layers) { for (e in layer.entities) } 
+    // for (int i = 0; i < num; i++) {
+        // TODO: render only if entity is in camera
+
+    for (int l = 0; l < layers_num; l++) {
+        for (int i = 0; i < layers[l].num_entities; i++) {
+
+            // entity_t ent = entities[i];
+
+            entity_t ent = layers[l].entities[i];
+
+            asset_t *asset = RE_get_asset(2);
+            int asset_h = asset->height;
+            int asset_w = asset->width;
+            SDL_Surface *image = asset->img;
+
+            int cam_x = app->cam.x;
+            int cam_y = app->cam.y;
+            int x = ent.x;
+            int y = ent.y;
+            int grid_x = x - cam_x;
+            int grid_y = y - cam_y;
+
+            int sx = (grid_x - grid_y) * (TILE_WIDTH/2) + WINDOW_WIDTH/2 - asset_w/2;
+            int sy = (grid_x + grid_y) * (TILE_HEIGHT/2) + WINDOW_HEIGHT/2 - asset_h/2;
+
+            int TILE_WIDTH = app->grid.tile_width;
+            int TILE_HEIGHT = app->grid.tile_height;
+
+            // int sx = (grid_x - grid_y) * (TILE_WIDTH/2) + (OFFSET_X - asset->width / 2);
+            // int sy = (grid_x + grid_y) * (TILE_HEIGHT/2);
+
+            SDL_Rect rect = {sx, sy, 0, 0};
+
+            SDL_BlitSurface(image, NULL, screen, &rect);
+            // log_debug("rendered entity %d in %d, %d", i, ent.x, ent.y);
+        }
     }
-    // Make FPS display bigger and offset from the corner
-    
-    SDL_GetRenderScale(app->renderer, &prevScaleX, &prevScaleY);
-    SDL_SetRenderScale(app->renderer, 2.5f, 2.5f); 
-    SDL_snprintf(debug_string, sizeof(debug_string), "%d fps", current_fps);
-    SDL_RenderDebugText(app->renderer, 12, 14, debug_string); // offset from top-left
-    SDL_SetRenderScale(app->renderer, prevScaleX, prevScaleY); // restore scale
+
 }
 
 void render_scene(app_hlpr_t* app) {
-    Uint64 now = SDL_GetTicksNS();
+    // do preparations, such as
+    // find out positions of all the objects in the camera
+    // intersect scene with the camera to not draw extra things
 
-    SDL_SetRenderDrawColor(app->renderer, 20, 20, 30, 255); 
-    SDL_RenderClear(app->renderer);
+    // intersect_camera_scene(app);
 
-	render_draw_grid(app);
-	render_draw_player(app);
-
-	render_fps_bar(app, now);
-
-    SDL_RenderPresent(app->renderer);
+	render_background(app);
+    render_entities(app);
+    SDL_UpdateWindowSurface(app->window);
 }
-
-
