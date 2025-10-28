@@ -194,14 +194,11 @@ void act_entity(app_hlpr_t *app, entity_t *ent) {
 	int max_x = app->grid.tile_num_x - 1;
 	int max_y = app->grid.tile_num_y - 1;
 
-	if (ent->x < 0)
-		ent->x = 0;
-	else if (ent->x > max_x)
-		ent->x = max_x;
-	if (ent->y < 0)
-		ent->y = 0;
-	else if (ent->y > max_y)
-		ent->y = max_y;
+    if (ent->x < 0) ent->x = 0;
+    else if (ent->x > max_x) ent->x = max_x;
+    if (ent->y < 0) ent->y = 0;
+    else if (ent->y > max_y) ent->y = max_y;
+
 }
 
 static inline int get_depth(entity_t *entity) { return entity->x + entity->y + 1; }

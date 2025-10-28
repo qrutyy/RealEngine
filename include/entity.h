@@ -1,6 +1,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+#include "animation.h"
 #include "asset.h"
 
 #define MAX_ENTITIES_NUM 1000
@@ -25,6 +26,9 @@ typedef struct entity {
     int depth;
     int asset_id;
     enum e_behaviour beh;
+    animation_t animations[MAX_ANIMATIONS_NUM];
+    int animations_num;
+    int curr_animation;
     asset_t *asset;
 } entity_t;
 
