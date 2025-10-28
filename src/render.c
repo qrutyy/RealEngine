@@ -2,7 +2,7 @@
 #include "app.h"
 #include "log.h"
 #include "asset.h"
-#include <stdint.h>
+#include <stdint.h> 
 
 void render_background(app_hlpr_t *app) {
     SDL_Window *window = app->window;
