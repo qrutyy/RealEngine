@@ -13,6 +13,15 @@ asset_cfg_t *find_asset_by_shortcut(map_layout_cfg_t *config, const char shortcu
 	return NULL;
 }
 
+entity_cfg_t *get_entity_with_type(map_layout_cfg_t *config, const char type_shortcut) {
+	for (int i = 0; i < config->entity_count; i ++) {
+		if (config->entities[i].shortcut == type_shortcut) {
+			return &config->entities[i];
+		}	
+	}
+	return NULL;
+}
+
 void assign_layers(grid_t *grid, map_layout_cfg_t *config) {
 	int parsed_entity_count = 0;
 	asset_cfg_t *asset;
@@ -29,7 +38,7 @@ void assign_layers(grid_t *grid, map_layout_cfg_t *config) {
 		for (int x = 0; x < MAX_MAP_WIDTH; x ++) {
 			for (int y = 0; y < MAX_MAP_HEIGHT; y ++) {
 				if (config->layout[i][y][x] != '-') {
-					curr_entity_cfg = &config->entities[i];
+					curr_entity_cfg = get_entity_with_type(config, config->layout[i][y][x]);
 					RE_add_entity(x, y, curr_entity_cfg->type);
 					parsed_entity_count++;
 				}
