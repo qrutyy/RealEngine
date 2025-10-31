@@ -4,7 +4,6 @@
 #include "scene.h"
 #include "log.h"
 #include "cfg_parser.h"
-#include <mach/exception_types.h>
 
 asset_cfg_t *find_asset_by_shortcut(map_layout_cfg_t *config, const char shortcut) {
 	for (int i = 0; i < MAX_ASSETS; i ++) {

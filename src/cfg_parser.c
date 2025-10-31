@@ -1,5 +1,6 @@
 #include "cfg_parser.h"
 #include "entity.h"
+#include <ctype.h>
 
 static void trim(char *str) {
     char *end;
