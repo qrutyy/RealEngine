@@ -57,3 +57,4 @@ int user_function(grid_t *grid) {
 
     return 0;
 }
+

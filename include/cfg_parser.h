@@ -27,7 +27,6 @@ typedef struct entity_cfg {
     char shortcut;
 	enum e_behaviour type; 
     int asset_id;
-    int pos_x, pos_y;
 } entity_cfg_t;
 
 typedef struct map_layout_cfg {
@@ -43,3 +42,5 @@ typedef struct map_layout_cfg {
     char layout[MAX_MAP_LAYERS][MAX_MAP_HEIGHT][MAX_MAP_WIDTH + 1];
 	int layer_count;
 } map_layout_cfg_t;
+
+void parse_config(const char *filename, map_layout_cfg_t *config);
