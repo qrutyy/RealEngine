@@ -32,6 +32,7 @@ typedef struct entity_cfg {
 typedef struct map_layout_cfg {
     int grid_width, grid_height;
     int tile_width, tile_height;
+    int pad_y;
 
     asset_cfg_t assets[MAX_ASSETS];
     int asset_count;

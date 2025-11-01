@@ -211,10 +211,6 @@ void render_background(app_hlpr_t *app) {
             int sx = (grid_x - grid_y) * (TILE_WIDTH/2) + WINDOW_WIDTH/2 - TILE_WIDTH/2;
             int sy = (grid_x + grid_y) * (TILE_HEIGHT/2 - pad) + WINDOW_HEIGHT/2 - TILE_HEIGHT/2;
 
-			int grid_x = x - cam_x;
-			int grid_y = y - cam_y;
-			int sx = (grid_x - grid_y) * (TILE_WIDTH / 2) + WINDOW_WIDTH / 2 - TILE_WIDTH / 2;
-			int sy = (grid_x + grid_y) * (TILE_HEIGHT / 2) + WINDOW_HEIGHT / 2 - TILE_HEIGHT / 2;
 
 			for (int tile_x = 0; tile_x < TILE_WIDTH; tile_x++) {
 				for (int tile_y = 0; tile_y < TILE_HEIGHT; tile_y++) {
