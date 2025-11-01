@@ -1,5 +1,6 @@
 #include "cfg_parser.h"
 #include "entity.h"
+#include "log.h"
 #include <ctype.h>
 
 static void trim(char *str) {
@@ -19,38 +20,37 @@ static enum e_behaviour get_entity_type_from_str(const char* str_name) {
 }
 
 static void parser_dbg(map_layout_cfg_t *config) {
-	printf("--- Настройки карты ---\n");
-    printf("  Размер сетки: %d x %d\n", config->grid_width, config->grid_height);
-    printf("  Размер тайла: %d x %d\n", config->tile_width, config->tile_height);
+	log_debug("--- Map settings ---\n");
+    log_debug("  Grid dimensions: %d x %d\n", config->grid_width, config->grid_height);
+    log_debug("  Tile dimensions: %d x %d\n", config->tile_width, config->tile_height);
 
-    printf("\n--- Ассеты (%d найдено) ---\n", config->asset_count);
+    log_debug("\n--- Assets (%d found) ---\n", config->asset_count);
     for (int i = 0; i < config->asset_count; i++) {
 		asset_cfg_t *a = &config->assets[i];
-        printf("  Ассет %d:\n", a->id);
-        printf("    shortcut: '%c'\n", a->shortcut);
-        printf("    name:     %s\n", a->name);
-        printf("    filename: %s\n", a->filename);
-        printf("    pos:      %d,%d\n", a->pos_x, a->pos_y);
-        printf("    dim:      %d,%d\n", a->dim_w, a->dim_h);
+        log_debug("  Asset %d:\n", a->id);
+        log_debug("    shortcut: '%c'\n", a->shortcut);
+        log_debug("    name:     %s\n", a->name);
+        log_debug("    filename: %s\n", a->filename);
+        log_debug("    pos:      %d,%d\n", a->pos_x, a->pos_y);
+        log_debug("    dim:      %d,%d\n", a->dim_w, a->dim_h);
     }
     
-    printf("\n--- Типы сущностей (%d найдено) ---\n", config->entity_count);
+    log_debug("\n--- Entities (%d found) ---\n", config->entity_count);
     for (int i = 0; i < config->entity_count; i++) {
         entity_cfg_t *e = &config->entities[i];
-        printf("  Сущность %d:\n", e->id);
-        printf("    shortcut: '%c'\n", e->shortcut);
-        printf("    type:     %d\n", e->type);
-        printf("    asset_id: %d\n", e->asset_id);
+        log_debug("  Entity %d:\n", e->id);
+        log_debug("    shortcut: '%c'\n", e->shortcut);
+        log_debug("    type:     %d\n", e->type);
+        log_debug("    asset_id: %d\n", e->asset_id);
     }
     
-    printf("\n--- Слои карты (%d найдено) ---\n", config->layer_count);
+    log_debug("\n--- Map layers (%d found) ---\n", config->layer_count);
     for (int l = 0; l < config->layer_count; l++) {
-        printf("  Слой %d:\n", l);
-        // Выведем первые 5 строк для проверки
+        log_debug("  Layer %d:\n", l);
         for (int y = 0; y < 5 && y < config->grid_height; y++) {
-            printf("    %s\n", config->layout[l][y]);
+            log_debug("    %s\n", config->layout[l][y]);
         }
-        if (config->grid_height > 5) printf("    ...\n");
+        if (config->grid_height > 5) log_debug("    ...\n");
     }
 
 }
@@ -58,7 +58,7 @@ static void parser_dbg(map_layout_cfg_t *config) {
 void parse_config(const char *filename, map_layout_cfg_t *config) {
 	FILE *file = fopen(filename, "r");
     if (!file) {
-        perror("Ошибка: не удалось открыть файл конфигурации");
+        log_error("Failed to open cfg file");
         return;
     }
 
@@ -96,7 +96,7 @@ void parse_config(const char *filename, map_layout_cfg_t *config) {
 
         if (strcmp(current_section, "Map.Layout.Layer") == 0 && current_layer_index != -1) {
             if (config->grid_width == 0) {
-                fprintf(stderr, "Внимание: grid.width/height должны быть определены перед [Map.Layout]\n");
+                log_error("grid.width/height should be inited before [Map.Layout]\n");
             }
             if (layout_row < MAX_MAP_HEIGHT && current_layer_index < MAX_MAP_LAYERS) {
                 strncpy(config->layout[current_layer_index][layout_row], line, config->grid_width);
