@@ -11,7 +11,15 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout Project
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v4
+        with:
+          # This line is the fix
+          submodules: 'recursive'
+
+      - name: Install SDL3 dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libasound2-dev libpulse-dev libaudio-dev libjack-dev libsndio-dev libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxfixes-dev libxi-dev libxinerama-dev libxss-dev libwayland-dev libxkbcommon-dev libdrm-dev libgbm-dev libgl1-mesa-dev
 
       - name: Build Project
         uses: threeal/cmake-action@v2.1.0
