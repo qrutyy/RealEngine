@@ -59,6 +59,8 @@ void render_asset(SDL_Surface *screen, int sx, int sy, asset_t *asset) {
 				Uint8 sr, sg, sb;
 				const SDL_PixelFormatDetails *sformat = SDL_GetPixelFormatDetails(screen->format);
 
+                float norm_aa = aa / 255.0f;
+
                 Uint8 r = MIN(255, sr + ar * norm_aa);
                 Uint8 g = MIN(255, sg + ag * norm_aa);
                 Uint8 b = MIN(255, sb + ab * norm_aa);
@@ -194,14 +196,20 @@ void render_background(app_hlpr_t *app) {
 	int screen_center_x = screen->w / 2;
 	int screen_center_y = screen->h / 2;
 
-	int bytes_per_pxl = (screen->pitch / screen->w);
+    int bytes_per_pxl = (screen->pitch / screen->w);
+    int pad = app->grid.pad_y;
 
-	for (int y = 0; y < tile_num_x; ++y) {
-		for (int x = 0; x < tile_num_y; ++x) {
-			SDL_Surface *image = app->grid.tiles[x][y];
-			if (!image) {
-				continue;
-			}
+    for (int x = 0; x < tile_num_x; ++x) {
+        for (int y = 0; y < tile_num_y; ++y) {
+            SDL_Surface *image = app->grid.tiles[x][y];
+            if (!image) {
+                continue;
+            }
+
+            int grid_x = x - cam_x;
+            int grid_y = y - cam_y;
+            int sx = (grid_x - grid_y) * (TILE_WIDTH/2) + WINDOW_WIDTH/2 - TILE_WIDTH/2;
+            int sy = (grid_x + grid_y) * (TILE_HEIGHT/2 - pad) + WINDOW_HEIGHT/2 - TILE_HEIGHT/2;
 
 			int grid_x = x - cam_x;
 			int grid_y = y - cam_y;
@@ -252,6 +260,8 @@ void render_entities(app_hlpr_t *app) {
 	int TILE_WIDTH = app->grid.tile_width;
 	int TILE_HEIGHT = app->grid.tile_height;
 
+    int pad = app->grid.pad_y;
+
     // TODO: render only if entity is in camera
     for (int l = 0; l < layers_num; l++) {
         for (int i = 0; i < layers[l].num_entities; i++) {
@@ -278,18 +288,20 @@ void render_entities(app_hlpr_t *app) {
 			int grid_x = x - cam_x;
 			int grid_y = y - cam_y;
 
-			int sx = (grid_x - grid_y) * (TILE_WIDTH / 2) + WINDOW_WIDTH / 2 - asset_w / 2;
-			int sy = (grid_x + grid_y) * (TILE_HEIGHT / 2) + WINDOW_HEIGHT / 2 - asset_h / 2;
+            int sx = (grid_x - grid_y) * (TILE_WIDTH/2) + WINDOW_WIDTH/2 - asset_w/2;
+            int sy = (grid_x + grid_y) * (TILE_HEIGHT/2 - pad) + WINDOW_HEIGHT/2 - asset_h/2;
 
             int TILE_WIDTH = app->grid.tile_width;
             int TILE_HEIGHT = app->grid.tile_height;
 
             float li_dir_x = 1.0;
             float li_dir_y = 0.5;
-            float sh_scale = 0.5;
+            float sh_scale = 1;
 
-            int shadow_sx = sx - TILE_WIDTH * li_dir_x;
-            int shadow_sy = sy - TILE_HEIGHT * li_dir_y * 2;
+            // int shadow_sx = sx - TILE_WIDTH * li_dir_x;
+            // int shadow_sy = sy - TILE_HEIGHT * li_dir_y * 2;
+            int shadow_sx = sx;
+            int shadow_sy = sy;
 
             render_shadow(screen, shadow_sx, shadow_sy, asset,
                                 li_dir_x, li_dir_y, sh_scale);

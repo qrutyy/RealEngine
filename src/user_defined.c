@@ -1,29 +1,35 @@
 #include "include.h"
 #include "scene.h"
 
-const int WIDTH = 20;
-const int HEIGHT = 20;
+const int WIDTH = 30;
+const int HEIGHT = 30;
 
-const int TILE_WIDTH = 128;
-const int TILE_HEIGHT = 64;
+const int TILE_WIDTH = 32;
+const int TILE_HEIGHT = 32;
+const int TILE_THICKNESS = 8;
 
 int user_function(grid_t *grid) {
-    RE_init_grid(grid, WIDTH, HEIGHT, TILE_WIDTH, TILE_HEIGHT);
+    RE_init_grid(grid, WIDTH, HEIGHT, TILE_WIDTH, TILE_HEIGHT, TILE_THICKNESS);
 
     int a1 = RE_load_asset(
-        "assets/tiles/ScreamingBrainStudios/Isometric_Floor_Tiles_Small_128x64/Small_128x64/Exterior/Grass/Floor_Grass_02-128x64p.png",
-        0, 64, 128, 64
+        "assets/tiles/philticular/isometric_jumpstart_v230311(1)/isometric_jumpstart_v230311/iso_tile_export.png",
+        256, 64, 32, 32
     );
 
     int a2 = RE_load_asset(
-        "assets/tiles/ScreamingBrainStudios/Isometric_Floor_Tiles_Small_128x64/Small_128x64/Exterior/Elements/Floor_Elements-01-128x64p.png",
-        128, 128, 128, 64
+        "assets/tiles/philticular/isometric_jumpstart_v230311(1)/isometric_jumpstart_v230311/iso_tile_export.png",
+        128, 192, 32, 32
     );
 
-    int pl_south = RE_load_asset(MAIN_CHAR_IMG_S, MAIN_CHAR_SRC_X, MAIN_CHAR_SRC_Y, MAIN_CHAR_WIDTH, MAIN_CHAR_HEIGHT);
-    int pl_east = RE_load_asset(MAIN_CHAR_IMG_E, MAIN_CHAR_SRC_X, MAIN_CHAR_SRC_Y, MAIN_CHAR_WIDTH, MAIN_CHAR_HEIGHT);
-    int pl_north = RE_load_asset(MAIN_CHAR_IMG_N, MAIN_CHAR_SRC_X, MAIN_CHAR_SRC_Y, MAIN_CHAR_WIDTH, MAIN_CHAR_HEIGHT);
-    int pl_west = RE_load_asset(MAIN_CHAR_IMG_W, MAIN_CHAR_SRC_X, MAIN_CHAR_SRC_Y, MAIN_CHAR_WIDTH, MAIN_CHAR_HEIGHT);
+    int pl_south = RE_load_asset(
+        "assets/characters/scrabling/critters/boar/boar_NW_idle_0.png",
+        0, 0, 46, 32
+    );
+
+    // int pl_south = RE_load_asset(MAIN_CHAR_IMG_S, MAIN_CHAR_SRC_X, MAIN_CHAR_SRC_Y, MAIN_CHAR_WIDTH, MAIN_CHAR_HEIGHT);
+    // int pl_east = RE_load_asset(MAIN_CHAR_IMG_E, MAIN_CHAR_SRC_X, MAIN_CHAR_SRC_Y, MAIN_CHAR_WIDTH, MAIN_CHAR_HEIGHT);
+    // int pl_north = RE_load_asset(MAIN_CHAR_IMG_N, MAIN_CHAR_SRC_X, MAIN_CHAR_SRC_Y, MAIN_CHAR_WIDTH, MAIN_CHAR_HEIGHT);
+    // int pl_west = RE_load_asset(MAIN_CHAR_IMG_W, MAIN_CHAR_SRC_X, MAIN_CHAR_SRC_Y, MAIN_CHAR_WIDTH, MAIN_CHAR_HEIGHT);
 
     for (int x = 0; x < WIDTH; x++) {
         for (int y = 0; y < HEIGHT; y++) {
@@ -40,9 +46,9 @@ int user_function(grid_t *grid) {
     }
 
     int pl_south_arr[] = { pl_south };
-    int pl_east_arr[] = { pl_east };
-    int pl_north_arr[] = { pl_north };
-    int pl_west_arr[] = { pl_west };
+    int pl_east_arr[] = { pl_south };
+    int pl_north_arr[] = { pl_south };
+    int pl_west_arr[] = { pl_south };
 
     int anim_south = RE_create_animation(pl_south_arr, 1);
     int anim_east = RE_create_animation(pl_east_arr, 1);

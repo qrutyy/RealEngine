@@ -323,8 +323,9 @@ int app_setup(app_hlpr_t *app) {
 	return err;
 }
 
-int RE_init_grid(grid_t *grid, int tile_num_x, int tile_num_y, int tile_width, int tile_height) {
-	SDL_Surface ***tiles;
+int RE_init_grid(grid_t *grid, int tile_num_x, int tile_num_y, int tile_width, int tile_height,
+                int pad_y) {
+    SDL_Surface ***tiles;
 
 	if (!grid) {
 		log_debug("Failed to init grid: a grid pointer should not be NULL pointer.\n");
@@ -352,12 +353,13 @@ int RE_init_grid(grid_t *grid, int tile_num_x, int tile_num_y, int tile_width, i
 		}
 	}
 
-	grid->tiles = tiles;
-	grid->tile_num_x = tile_num_x;
-	grid->tile_num_y = tile_num_y;
-	grid->tile_width = tile_width;
-	grid->tile_height = tile_height;
-	log_debug("Initialized grid %d x %d", tile_num_x, tile_num_y);
+    grid->tiles = tiles;
+    grid->tile_num_x = tile_num_x;
+    grid->tile_num_y = tile_num_y;
+    grid->tile_width = tile_width;
+    grid->tile_height = tile_height;
+    grid->pad_y = pad_y;
+    log_debug("Initialized grid %d x %d", tile_num_x, tile_num_y);
 
 	return 0;
 }

@@ -56,10 +56,12 @@ int RE_assign_asset_static(grid_t *grid, int id, int layer, int x, int y);
     @param tile_num_y height of a grid in tiles.
     @param tile_width width of a tile asset in pixels.
     @param tile_height height of a tile asset in pixels.
+    @param tile_pad_y vertical padding (for thick tiles)
 
     @returns 0 on success, error code otherwise.
 */
-int RE_init_grid(grid_t *grid, int tile_num_x, int tile_num_y, int tile_width, int tile_height);
+int RE_init_grid(grid_t *grid, int tile_num_x, int tile_num_y, int tile_width, int tile_height,
+        int pad_y);
 
 
 #endif // ASSET_H
