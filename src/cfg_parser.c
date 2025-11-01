@@ -127,10 +127,8 @@ void parse_config(const char *filename, map_layout_cfg_t *config) {
                 }
             }
         } else if (strcmp(current_section, "Map") == 0) {
-            if (strcmp(key, "grid.width") == 0) config->grid_width = atoi(value);
-            else if (strcmp(key, "grid.height") == 0) config->grid_height = atoi(value);
-            else if (strcmp(key, "tile.width") == 0) config->tile_width = atoi(value);
-            else if (strcmp(key, "tile.height") == 0) config->tile_height = atoi(value);
+            if (strcmp(key, "grid.dim") == 0) sscanf(value, "%d,%d", &config->grid_width, &config->grid_height);
+            else if (strcmp(key, "tile.dim") == 0) sscanf(value, "%d,%d", &config->tile_width, &config->tile_height);
         } else if (strcmp(current_section, "Entities") == 0) {
             int id;
             char prop[50];
