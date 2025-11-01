@@ -10,6 +10,7 @@ typedef struct grid {
     int tile_num_y;
     int tile_width; // tile width in pixels
     int tile_height; // tile height in pixels
+    int pad_y; // a vertical padding, thickness of a tile
 } grid_t;
 
 typedef struct m_vec2{

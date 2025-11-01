@@ -200,8 +200,10 @@ void render_background(app_hlpr_t *app) {
 
     int bytes_per_pxl = (screen->pitch / screen->w);
 
-    for (int y = 0; y < tile_num_x; ++y) {
-        for (int x = 0; x < tile_num_y; ++x) {
+    int pad = app->grid.pad_y;
+
+    for (int x = 0; x < tile_num_x; ++x) {
+        for (int y = 0; y < tile_num_y; ++y) {
             SDL_Surface *image = app->grid.tiles[x][y];
             if (!image) {
                 continue;
@@ -210,7 +212,7 @@ void render_background(app_hlpr_t *app) {
             int grid_x = x - cam_x;
             int grid_y = y - cam_y;
             int sx = (grid_x - grid_y) * (TILE_WIDTH/2) + WINDOW_WIDTH/2 - TILE_WIDTH/2;
-            int sy = (grid_x + grid_y) * (TILE_HEIGHT/2) + WINDOW_HEIGHT/2 - TILE_HEIGHT/2;
+            int sy = (grid_x + grid_y) * (TILE_HEIGHT/2 - pad) + WINDOW_HEIGHT/2 - TILE_HEIGHT/2;
 
             for (int tile_x = 0; tile_x < TILE_WIDTH; tile_x++) {
                 for (int tile_y = 0; tile_y < TILE_HEIGHT; tile_y++) {
@@ -252,6 +254,8 @@ void render_entities(app_hlpr_t *app) {
     int TILE_WIDTH = app->grid.tile_width;
     int TILE_HEIGHT = app->grid.tile_height;
 
+    int pad = app->grid.pad_y;
+
     // TODO: render only if entity is in camera
     for (int l = 0; l < layers_num; l++) {
         for (int i = 0; i < layers[l].num_entities; i++) {
@@ -281,17 +285,19 @@ void render_entities(app_hlpr_t *app) {
             int grid_y = y - cam_y;
 
             int sx = (grid_x - grid_y) * (TILE_WIDTH/2) + WINDOW_WIDTH/2 - asset_w/2;
-            int sy = (grid_x + grid_y) * (TILE_HEIGHT/2) + WINDOW_HEIGHT/2 - asset_h/2;
+            int sy = (grid_x + grid_y) * (TILE_HEIGHT/2 - pad) + WINDOW_HEIGHT/2 - asset_h/2;
 
             int TILE_WIDTH = app->grid.tile_width;
             int TILE_HEIGHT = app->grid.tile_height;
 
             float li_dir_x = 1.0;
             float li_dir_y = 0.5;
-            float sh_scale = 0.5;
+            float sh_scale = 1;
 
-            int shadow_sx = sx - TILE_WIDTH * li_dir_x;
-            int shadow_sy = sy - TILE_HEIGHT * li_dir_y * 2;
+            // int shadow_sx = sx - TILE_WIDTH * li_dir_x;
+            // int shadow_sy = sy - TILE_HEIGHT * li_dir_y * 2;
+            int shadow_sx = sx;
+            int shadow_sy = sy;
 
             render_shadow(screen, shadow_sx, shadow_sy, asset,
                                 li_dir_x, li_dir_y, sh_scale);
