@@ -1,6 +1,6 @@
 # RealEngine
 
-RealEngine is a simple, educational 2D game engine written in C, utilizing the SDL3 library for cross-platform graphics and input handling. It's designed to be a learning tool for those interested in game engine architecture and development.
+RealEngine is a simple, educational 2D game engine written in C, utilizing the SDL3 library for cross-platform graphics and input handling.
 
 ## Features
 
