@@ -21,35 +21,44 @@ entity_cfg_t *get_entity_with_type(map_layout_cfg_t *config, const char type_sho
 	}
 	return NULL;
 }
-
 void assign_layers(grid_t *grid, map_layout_cfg_t *config) {
 	int parsed_entity_count = 0;
 	asset_cfg_t *asset;
 	entity_cfg_t *curr_entity_cfg;
 
-	for (int x = 0; x < MAX_MAP_WIDTH; x ++) {
-		for (int y = 0; y < MAX_MAP_HEIGHT; y ++) {
-			asset = find_asset_by_shortcut(config, config->layout[0][y][x]);
-			RE_assign_asset_static(grid, asset->engine_asset_key, 0, asset->pos_x, asset->pos_y);	
+	for (int y = 0; y < config->grid_height; y++) {
+		for (int x = 0; x < config->grid_width; x++) {
+			char shortcut = config->layout[0][y][x];
+			if (shortcut == '\0') continue;
+
+			asset = find_asset_by_shortcut(config, shortcut);
+
+			if (asset) {
+				RE_assign_asset_static(grid, asset->engine_asset_key, 0, x, y);
+			}
 		}
 	}
 
-	for (int i = 0; i < config->layer_count; i ++) {
-		for (int x = 0; x < MAX_MAP_WIDTH; x ++) {
-			for (int y = 0; y < MAX_MAP_HEIGHT; y ++) {
-				if (config->layout[i][y][x] != '-') {
-					curr_entity_cfg = get_entity_with_type(config, config->layout[i][y][x]);
-					RE_add_entity(x, y, curr_entity_cfg->type);
-					parsed_entity_count++;
+	for (int i = 1; i < config->layer_count; i++) {
+		for (int y = 0; y < config->grid_height; y++) {
+			for (int x = 0; x < config->grid_width; x++) {
+				char shortcut = config->layout[i][y][x];
+
+				if (shortcut != '-' && shortcut != '\0') {
+					curr_entity_cfg = get_entity_with_type(config, shortcut);
+
+					if (curr_entity_cfg) {
+						RE_add_entity(x, y, curr_entity_cfg->type);
+						parsed_entity_count++;
+					}
 				}
 			}
 		}
 	}
 
 	if (config->entity_count != parsed_entity_count) {
-		log_error("were fucked up, by 'we' i mean my parser\n");
+		log_error("Warning: Number of entities in config (%d) does not match entities found in layout (%d)\n", config->entity_count, parsed_entity_count);
 	}
-	
 }
 
 int load_cfg(grid_t *grid, map_layout_cfg_t *config) {

@@ -16,8 +16,8 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 	
-	printf("Parsing config file 'scene.cfg'...\n");
-    parse_config("scene.cfg", &config);
+	printf("Parsing config file 'demo.cfg'...\n");
+    parse_config("demo/demo.cfg", &config);
 
 	printf("Initializing scene from config...\n");
     load_cfg(&app->grid, &config);

@@ -72,7 +72,7 @@ void parse_config(const char *filename, map_layout_cfg_t *config) {
     while (fgets(line, sizeof(line), file)) {
         trim(line);
 		// skip comments
-        if (line[0] == '#' || line[0] == ';' || line[0] == '\0') {
+        if (line[0] == ';' || line[0] == '\0') {
             continue;
         }
 
