@@ -1,36 +1,36 @@
 #include "app.h"
-#include "scene.h"
 #include "asset.h"
-#include "include.h"
 #include "cfg_loader.h"
+#include "include.h"
+#include "scene.h"
 #include <stdlib.h>
 
 int main(int argc, char *argv[]) {
-    (void)argc;
-    (void)argv;
+	(void)argc;
+	(void)argv;
 
 	map_layout_cfg_t config;
 
-    app_hlpr_t* app = app_create();
-    if (!app) {
-        return EXIT_FAILURE;
-    }
-	
+	app_hlpr_t *app = app_create();
+	if (!app) {
+		return EXIT_FAILURE;
+	}
+
 	printf("Parsing config file 'demo.cfg'...\n");
-    parse_config("demo/demo.cfg", &config);
+	parse_config("demo/demo.cfg", &config);
 
 	printf("Initializing scene from config...\n");
-    load_cfg(&app->grid, &config);
+	load_cfg(&app->grid, &config);
 
-    int err = app_setup(app);
-    if (err) {
-        app_destroy(app);
-        return err;
-    }
-        
-    app_run(app);
+	int err = app_setup(app);
+	if (err) {
+		app_destroy(app);
+		return err;
+	}
 
-    app_destroy(app);
+	app_run(app);
 
-    return EXIT_SUCCESS;
+	app_destroy(app);
+
+	return EXIT_SUCCESS;
 }
