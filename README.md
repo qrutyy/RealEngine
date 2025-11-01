@@ -97,3 +97,6 @@ By following the guidelines in `CONTRIBUTING.md`, you help us maintain code qual
 
 This code is published under GNU GPL V3 license described in [LICENSE](https://github.com/qrutyy/RealEngine/blob/main/LICENSE.md)
 
+## Game Example
+
+![Game example](example.gif)

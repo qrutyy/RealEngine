@@ -67,7 +67,7 @@ int load_cfg(grid_t *grid, map_layout_cfg_t *config) {
 	int i;
 	asset_cfg_t *curr_asset_cfg;
 
-	RE_init_grid(grid, config->grid_width, config->grid_height, config->tile_width, config->tile_height);
+	RE_init_grid(grid, config->grid_width, config->grid_height, config->tile_width, config->tile_height, config->pad_y);
 
 	for (i = 0; i < config->asset_count; i++) {
 		curr_asset_cfg = &config->assets[i];

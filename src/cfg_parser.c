@@ -144,6 +144,9 @@ void parse_config(const char *filename, map_layout_cfg_t *config) {
 				sscanf(value, "%d,%d", &config->grid_width, &config->grid_height);
 			else if (strcmp(key, "tile.dim") == 0)
 				sscanf(value, "%d,%d", &config->tile_width, &config->tile_height);
+			else if (strcmp(key, "tile.pad_y") == 0)
+						sscanf(value, "%d", &config->pad_y);
+
 		} else if (strcmp(current_section, "Entities") == 0) {
 			int id;
 			char prop[50];
