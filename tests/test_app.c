@@ -1,25 +1,9 @@
 #include "unity.h"
-#include "app.h"
 #include "errors.h"
+#include "app.h"
 #include "log.h"
 #include <stdio.h>
 #include <stdlib.h>
-
-entity_t* get_entities(void) { 
-    static entity_t entities[2] = {0};
-    return entities; 
-}
-int get_entities_num(void) { return 2; }
-void render_scene(app_hlpr_t* app) { }
-
-void setUp(void) {
-    
-}
-
-void tearDown(void) {
-    
-}
-
 
 void test_app_create_destroy(void) {
     app_hlpr_t* app = app_create();
