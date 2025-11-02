@@ -42,18 +42,21 @@ void render_asset(SDL_Surface *screen, int sx, int sy, asset_t *asset) {
 
 			SDL_Surface *img = asset->img;
 
+<<<<<<< HEAD
 			Uint32 *const screen_pxl =
 			    (Uint32 *)((Uint8 *)screen->pixels + screen_y * screen->pitch + screen_x * bytes_per_pxl);
 			Uint32 *asset_pxl = (Uint32 *)((Uint8 *)img->pixels + y * img->pitch + x * bytes_per_pxl);
 			// *screen_pxl = *new_pixel;
+=======
+            Uint32 *const screen_pxl = (Uint32*) ((Uint8 *) screen->pixels + screen_y * screen->pitch + screen_x * bytes_per_pxl);
+            Uint32 *asset_pxl = (Uint32*) ((Uint8 *) img->pixels + y * img->pitch + x * bytes_per_pxl);
+>>>>>>> bb05866 (fix: draw only entities that are inside camera)
 
 			Uint8 ar, ag, ab, aa;
 
 			const SDL_PixelFormatDetails *aformat = SDL_GetPixelFormatDetails(img->format);
 			SDL_GetRGBA(*asset_pxl, aformat, NULL, &ar, &ag, &ab, &aa);
 
-			//     *screen_pxl = *asset_pxl;
-			// }
 			if (aa == 255) {
 				*screen_pxl = *asset_pxl;
 			} else if (aa > 0) {
@@ -203,9 +206,8 @@ void render_entities(app_hlpr_t *app) {
 
 	int pad = app->grid.pad_y;
 
-	// TODO: render only if entity is in camera
-	for (int l = 0; l < layers_num; l++) {
-		for (int i = 0; i < layers[l].num_entities; i++) {
+    for (int l = 0; l < layers_num; l++) {
+        for (int i = 0; i < layers[l].num_entities; i++) {
 
 			// entity_t ent = entities[i];
 
@@ -244,19 +246,24 @@ void render_entities(app_hlpr_t *app) {
 			int shadow_sx = sx;
 			int shadow_sy = sy;
 
+<<<<<<< HEAD
 			render_shadow(screen, shadow_sx, shadow_sy, asset, li_dir_x, li_dir_y, sh_scale);
 			render_asset(screen, sx, sy, asset);
 		}
 	}
+=======
+			if (sx < 0 || sx > WINDOW_WIDTH || sy < 0 || sy > WINDOW_HEIGHT) {
+				continue;
+			}
+            render_shadow(screen, shadow_sx, shadow_sy, asset,
+                                li_dir_x, li_dir_y, sh_scale);
+            render_asset(screen, sx, sy, asset);
+        }
+    }
+>>>>>>> bb05866 (fix: draw only entities that are inside camera)
 }
 
 void render_scene(app_hlpr_t *app) {
-	// do preparations, such as
-	// find out positions of all the objects in the camera
-	// intersect scene with the camera to not draw extra things
-
-	// intersect_camera_scene(app);
-
 	render_background(app);
 	render_entities(app);
 	SDL_UpdateWindowSurface(app->window);
