@@ -43,5 +43,6 @@ typedef struct layer_entities {
 int RE_add_entity(int x, int y, enum e_behaviour beh);
 entity_t *get_entities(void);
 int get_entities_num(void);
+void reset_entities(void);
 
 #endif // ENTITY_H
