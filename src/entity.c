@@ -13,6 +13,7 @@ int RE_add_entity(int x, int y, enum e_behaviour beh) {
 
 	if (curr_entities_num >= MAX_ENTITIES_NUM) {
 		log_error("Failed to add entity: limit %d is reached.\n", MAX_ENTITIES_NUM);
+		return -1;
 	}
 	if (beh == PLAYER) {
 		for (int i = 0; i < curr_entities_num; i++) {
@@ -40,3 +41,15 @@ int RE_add_entity(int x, int y, enum e_behaviour beh) {
 entity_t *get_entities(void) { return (entity_t *)&entities; }
 
 int get_entities_num(void) { return curr_entities_num; }
+
+void reset_entities(void) {
+	for (int i = 0; i < curr_entities_num; i++) {
+        entities[i].x = 0;
+        entities[i].y = 0;
+        entities[i].depth = 0;
+        entities[i].beh = 0;
+        entities[i].asset_id = 0;
+    }
+	curr_entities_num = 0;
+
+}

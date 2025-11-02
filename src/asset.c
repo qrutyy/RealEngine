@@ -31,7 +31,7 @@ int RE_load_asset(char *filename, int src_x, int src_y, int width, int height) {
 	asset_t asset = {.img = asset_img, .width = width, .height = height};
 	assets[id] = asset;
 
-	log_debug("Loaded asset from %s with id %d\n", filename, id);
+	// log_debug("Loaded asset from %s with id %d\n", filename, id);
 
 	return id;
 }
@@ -39,6 +39,10 @@ int RE_load_asset(char *filename, int src_x, int src_y, int width, int height) {
 asset_t *RE_get_asset(int id) {
 	if (id > MAX_ASSETS_NUM) {
 		log_debug("%d exceeds maximum assets num %d.\n", id, MAX_ASSETS_NUM);
+		return NULL;
+	}
+	if (id < 0) {
+		log_debug("%d is a negative id which is invalid.\n", id);
 		return NULL;
 	}
 	return &assets[id];
