@@ -7,5 +7,4 @@
 #define ERR_ASSET_NOT_FOUND 4
 #define ERR_ASSET_NOT_LOADED 5
 
-#endif //ERR_H
-
+#endif // ERR_H

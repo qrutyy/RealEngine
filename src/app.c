@@ -193,11 +193,14 @@ void act_entity(app_hlpr_t *app, entity_t *ent) {
 	int max_x = app->grid.tile_num_x - 1;
 	int max_y = app->grid.tile_num_y - 1;
 
-    if (ent->x < 0) ent->x = 0;
-    else if (ent->x > max_x) ent->x = max_x;
-    if (ent->y < 0) ent->y = 0;
-    else if (ent->y > max_y) ent->y = max_y;
-
+	if (ent->x < 0)
+		ent->x = 0;
+	else if (ent->x > max_x)
+		ent->x = max_x;
+	if (ent->y < 0)
+		ent->y = 0;
+	else if (ent->y > max_y)
+		ent->y = max_y;
 }
 
 inline int get_depth(entity_t *entity) { return entity->x + entity->y + 1; }
@@ -324,9 +327,8 @@ int app_setup(app_hlpr_t *app) {
 	return err;
 }
 
-int RE_init_grid(grid_t *grid, int tile_num_x, int tile_num_y, int tile_width, int tile_height,
-                int pad_y) {
-    SDL_Surface ***tiles;
+int RE_init_grid(grid_t *grid, int tile_num_x, int tile_num_y, int tile_width, int tile_height, int pad_y) {
+	SDL_Surface ***tiles;
 
 	if (!grid) {
 		log_debug("Failed to init grid: a grid pointer should not be NULL pointer.\n");
@@ -354,13 +356,13 @@ int RE_init_grid(grid_t *grid, int tile_num_x, int tile_num_y, int tile_width, i
 		}
 	}
 
-    grid->tiles = tiles;
-    grid->tile_num_x = tile_num_x;
-    grid->tile_num_y = tile_num_y;
-    grid->tile_width = tile_width;
-    grid->tile_height = tile_height;
-    grid->pad_y = pad_y;
-    log_debug("Initialized grid %d x %d", tile_num_x, tile_num_y);
+	grid->tiles = tiles;
+	grid->tile_num_x = tile_num_x;
+	grid->tile_num_y = tile_num_y;
+	grid->tile_width = tile_width;
+	grid->tile_height = tile_height;
+	grid->pad_y = pad_y;
+	log_debug("Initialized grid %d x %d", tile_num_x, tile_num_y);
 
 	return 0;
 }

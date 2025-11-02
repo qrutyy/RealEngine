@@ -29,12 +29,12 @@ void render_asset(SDL_Surface *screen, int sx, int sy, asset_t *asset) {
 
 	int bytes_per_pxl = (screen->pitch / screen->w);
 
-    for (int x = 0; x < asset_w; x++) {
-        for (int y = 0; y < asset_h; y++) {
-            // log_debug ("x, y: %d, %d, x, y: %d, %d", x, y, x, y);
+	for (int x = 0; x < asset_w; x++) {
+		for (int y = 0; y < asset_h; y++) {
+			// log_debug ("x, y: %d, %d, x, y: %d, %d", x, y, x, y);
 
-            int screen_x = sx + x;
-            int screen_y = sy + y;
+			int screen_x = sx + x;
+			int screen_y = sy + y;
 
 			if (screen_x < 0 || screen_x >= WINDOW_WIDTH || screen_y < 0 || screen_y >= WINDOW_HEIGHT) {
 				continue;
@@ -42,9 +42,10 @@ void render_asset(SDL_Surface *screen, int sx, int sy, asset_t *asset) {
 
 			SDL_Surface *img = asset->img;
 
-            Uint32 *const screen_pxl = (Uint32*) ((Uint8 *) screen->pixels + screen_y * screen->pitch + screen_x * bytes_per_pxl);
-            Uint32 *asset_pxl = (Uint32*) ((Uint8 *) img->pixels + y * img->pitch + x * bytes_per_pxl);
-            // *screen_pxl = *new_pixel;
+			Uint32 *const screen_pxl =
+			    (Uint32 *)((Uint8 *)screen->pixels + screen_y * screen->pitch + screen_x * bytes_per_pxl);
+			Uint32 *asset_pxl = (Uint32 *)((Uint8 *)img->pixels + y * img->pitch + x * bytes_per_pxl);
+			// *screen_pxl = *new_pixel;
 
 			Uint8 ar, ag, ab, aa;
 
@@ -60,59 +61,60 @@ void render_asset(SDL_Surface *screen, int sx, int sy, asset_t *asset) {
 				const SDL_PixelFormatDetails *sformat = SDL_GetPixelFormatDetails(screen->format);
 
 				SDL_GetRGB(*screen_pxl, sformat, NULL, &sr, &sg, &sb);
-				
-                float norm_aa = aa / 255.0f;
 
-                Uint8 r = MIN(255, sr + ar * norm_aa);
-                Uint8 g = MIN(255, sg + ag * norm_aa);
-                Uint8 b = MIN(255, sb + ab * norm_aa);
-                
-                *screen_pxl = SDL_MapRGB(sformat, NULL, r, g, b);
-            }
-        }
-    }
+				float norm_aa = aa / 255.0f;
+
+				Uint8 r = MIN(255, sr + ar * norm_aa);
+				Uint8 g = MIN(255, sg + ag * norm_aa);
+				Uint8 b = MIN(255, sb + ab * norm_aa);
+
+				*screen_pxl = SDL_MapRGB(sformat, NULL, r, g, b);
+			}
+		}
+	}
 }
 
-void render_shadow(SDL_Surface *screen, int sx, int sy, asset_t *asset,
-        float li_dir_x, float li_dir_y, float sh_scale) {
+void render_shadow(SDL_Surface *screen, int sx, int sy, asset_t *asset, float li_dir_x, float li_dir_y,
+                   float sh_scale) {
 
-    int bytes_per_pxl = (screen->pitch / screen->w);
-    int asset_w = asset->img->w;
-    int asset_h = asset->img->h;
+	int bytes_per_pxl = (screen->pitch / screen->w);
+	int asset_w = asset->img->w;
+	int asset_h = asset->img->h;
 
-    for (int x = 0; x < asset_w; x++) {
-        for (int y = 0; y < asset_h; y++) {
-            SDL_Surface *img = asset->img;
-            Uint32 *asset_pxl = (Uint32*) ((Uint8 *) img->pixels + y * img->pitch + x * bytes_per_pxl);
+	for (int x = 0; x < asset_w; x++) {
+		for (int y = 0; y < asset_h; y++) {
+			SDL_Surface *img = asset->img;
+			Uint32 *asset_pxl = (Uint32 *)((Uint8 *)img->pixels + y * img->pitch + x * bytes_per_pxl);
 
-            Uint8 ar, ag, ab, aa;
-            const SDL_PixelFormatDetails *aformat = SDL_GetPixelFormatDetails(img->format);
-            SDL_GetRGBA(*asset_pxl, aformat, NULL, &ar, &ag, &ab, &aa);
+			Uint8 ar, ag, ab, aa;
+			const SDL_PixelFormatDetails *aformat = SDL_GetPixelFormatDetails(img->format);
+			SDL_GetRGBA(*asset_pxl, aformat, NULL, &ar, &ag, &ab, &aa);
 
-            if (aa == 0) continue;
+			if (aa == 0)
+				continue;
 
-            int height_scale = (asset_h - y) * sh_scale;
-            int shadow_x = x + sx + (li_dir_x * height_scale);
-            int shadow_y = y + sy + (li_dir_y * height_scale);
+			int height_scale = (asset_h - y) * sh_scale;
+			int shadow_x = x + sx + (li_dir_x * height_scale);
+			int shadow_y = y + sy + (li_dir_y * height_scale);
 
-            if (shadow_x < 0 || shadow_x >= WINDOW_WIDTH || 
-                shadow_y < 0 || shadow_y >= WINDOW_HEIGHT) {
-                continue;
-            }
+			if (shadow_x < 0 || shadow_x >= WINDOW_WIDTH || shadow_y < 0 || shadow_y >= WINDOW_HEIGHT) {
+				continue;
+			}
 
-            Uint32 *shadow_pxl = (Uint32*) ((Uint8 *) screen->pixels + shadow_y * screen->pitch + shadow_x * bytes_per_pxl);
-            const SDL_PixelFormatDetails *sformat = SDL_GetPixelFormatDetails(screen->format);
+			Uint32 *shadow_pxl =
+			    (Uint32 *)((Uint8 *)screen->pixels + shadow_y * screen->pitch + shadow_x * bytes_per_pxl);
+			const SDL_PixelFormatDetails *sformat = SDL_GetPixelFormatDetails(screen->format);
 
-            Uint8 sr, sg, sb;
-            SDL_GetRGB(*shadow_pxl, sformat, NULL, &sr, &sg, &sb);
+			Uint8 sr, sg, sb;
+			SDL_GetRGB(*shadow_pxl, sformat, NULL, &sr, &sg, &sb);
 
-            Uint8 shadow_r = sr * 0.5f;
-            Uint8 shadow_g = sg * 0.5f;
-            Uint8 shadow_b = sb * 0.5f;
-            
-            *shadow_pxl = SDL_MapRGB(sformat, NULL, shadow_r, shadow_g, shadow_b);
-        }
-    }
+			Uint8 shadow_r = sr * 0.5f;
+			Uint8 shadow_g = sg * 0.5f;
+			Uint8 shadow_b = sb * 0.5f;
+
+			*shadow_pxl = SDL_MapRGB(sformat, NULL, shadow_r, shadow_g, shadow_b);
+		}
+	}
 }
 
 // TODO: store background statically
@@ -141,21 +143,20 @@ void render_background(app_hlpr_t *app) {
 	int screen_center_x = screen->w / 2;
 	int screen_center_y = screen->h / 2;
 
-    int bytes_per_pxl = (screen->pitch / screen->w);
-    int pad = app->grid.pad_y;
+	int bytes_per_pxl = (screen->pitch / screen->w);
+	int pad = app->grid.pad_y;
 
-    for (int x = 0; x < tile_num_x; ++x) {
-        for (int y = 0; y < tile_num_y; ++y) {
-            SDL_Surface *image = app->grid.tiles[x][y];
-            if (!image) {
-                continue;
-            }
+	for (int x = 0; x < tile_num_x; ++x) {
+		for (int y = 0; y < tile_num_y; ++y) {
+			SDL_Surface *image = app->grid.tiles[x][y];
+			if (!image) {
+				continue;
+			}
 
-            int grid_x = x - cam_x;
-            int grid_y = y - cam_y;
-            int sx = (grid_x - grid_y) * (TILE_WIDTH/2) + WINDOW_WIDTH/2 - TILE_WIDTH/2;
-            int sy = (grid_x + grid_y) * (TILE_HEIGHT/2 - pad) + WINDOW_HEIGHT/2 - TILE_HEIGHT/2;
-
+			int grid_x = x - cam_x;
+			int grid_y = y - cam_y;
+			int sx = (grid_x - grid_y) * (TILE_WIDTH / 2) + WINDOW_WIDTH / 2 - TILE_WIDTH / 2;
+			int sy = (grid_x + grid_y) * (TILE_HEIGHT / 2 - pad) + WINDOW_HEIGHT / 2 - TILE_HEIGHT / 2;
 
 			for (int tile_x = 0; tile_x < TILE_WIDTH; tile_x++) {
 				for (int tile_y = 0; tile_y < TILE_HEIGHT; tile_y++) {
@@ -200,11 +201,11 @@ void render_entities(app_hlpr_t *app) {
 	int TILE_WIDTH = app->grid.tile_width;
 	int TILE_HEIGHT = app->grid.tile_height;
 
-    int pad = app->grid.pad_y;
+	int pad = app->grid.pad_y;
 
-    // TODO: render only if entity is in camera
-    for (int l = 0; l < layers_num; l++) {
-        for (int i = 0; i < layers[l].num_entities; i++) {
+	// TODO: render only if entity is in camera
+	for (int l = 0; l < layers_num; l++) {
+		for (int i = 0; i < layers[l].num_entities; i++) {
 
 			// entity_t ent = entities[i];
 
@@ -228,26 +229,25 @@ void render_entities(app_hlpr_t *app) {
 			int grid_x = x - cam_x;
 			int grid_y = y - cam_y;
 
-            int sx = (grid_x - grid_y) * (TILE_WIDTH/2) + WINDOW_WIDTH/2 - asset_w/2;
-            int sy = (grid_x + grid_y) * (TILE_HEIGHT/2 - pad) + WINDOW_HEIGHT/2 - asset_h/2;
+			int sx = (grid_x - grid_y) * (TILE_WIDTH / 2) + WINDOW_WIDTH / 2 - asset_w / 2;
+			int sy = (grid_x + grid_y) * (TILE_HEIGHT / 2 - pad) + WINDOW_HEIGHT / 2 - asset_h / 2;
 
-            int TILE_WIDTH = app->grid.tile_width;
-            int TILE_HEIGHT = app->grid.tile_height;
+			int TILE_WIDTH = app->grid.tile_width;
+			int TILE_HEIGHT = app->grid.tile_height;
 
-            float li_dir_x = 1.0;
-            float li_dir_y = 0.5;
-            float sh_scale = 1;
+			float li_dir_x = 1.0;
+			float li_dir_y = 0.5;
+			float sh_scale = 1;
 
-            // int shadow_sx = sx - TILE_WIDTH * li_dir_x;
-            // int shadow_sy = sy - TILE_HEIGHT * li_dir_y * 2;
-            int shadow_sx = sx;
-            int shadow_sy = sy;
+			// int shadow_sx = sx - TILE_WIDTH * li_dir_x;
+			// int shadow_sy = sy - TILE_HEIGHT * li_dir_y * 2;
+			int shadow_sx = sx;
+			int shadow_sy = sy;
 
-            render_shadow(screen, shadow_sx, shadow_sy, asset,
-                                li_dir_x, li_dir_y, sh_scale);
-            render_asset(screen, sx, sy, asset);
-        }
-    }
+			render_shadow(screen, shadow_sx, shadow_sy, asset, li_dir_x, li_dir_y, sh_scale);
+			render_asset(screen, sx, sy, asset);
+		}
+	}
 }
 
 void render_scene(app_hlpr_t *app) {

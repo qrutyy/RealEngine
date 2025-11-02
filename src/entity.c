@@ -44,12 +44,11 @@ int get_entities_num(void) { return curr_entities_num; }
 
 void reset_entities(void) {
 	for (int i = 0; i < curr_entities_num; i++) {
-        entities[i].x = 0;
-        entities[i].y = 0;
-        entities[i].depth = 0;
-        entities[i].beh = 0;
-        entities[i].asset_id = 0;
-    }
+		entities[i].x = 0;
+		entities[i].y = 0;
+		entities[i].depth = 0;
+		entities[i].beh = 0;
+		entities[i].asset_id = 0;
+	}
 	curr_entities_num = 0;
-
 }

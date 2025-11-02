@@ -5,9 +5,11 @@
 // Should make this easier in futute
 
 #define TILE_SRC_X 256 // position in source image from up to bottom in pixels
-#define TILE_SRC_Y 64 // position in source image from left to right in pixels
+#define TILE_SRC_Y 64  // position in source image from left to right in pixels
 
-#define TEST_TILE "assets/tiles/ScreamingBrainStudios/Isometric_Floor_Tiles_Small_128x64/Small_128x64/Exterior/Grass/Floor_Grass_02-128x64p.png"
+#define TEST_TILE                                                                                                      \
+	"assets/tiles/ScreamingBrainStudios/Isometric_Floor_Tiles_Small_128x64/Small_128x64/Exterior/Grass/"               \
+	"Floor_Grass_02-128x64p.png"
 
 #define MAIN_CHAR_SRC_X 0 // position in source image from up to bottom in pixels
 #define MAIN_CHAR_SRC_Y 0 // position in source image from left to right in pixels
