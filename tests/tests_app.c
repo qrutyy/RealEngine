@@ -10,53 +10,51 @@ void tearDown(void) {}
 
 void test_app_create_destroy(void) {
     app_hlpr_t* app = app_create();
-    // TEST_ASSERT_NOT_NULL(app);
+    TEST_ASSERT_NOT_NULL(app);
     TEST_ASSERT_FALSE(app->is_running); 
     
     app_destroy(app);
 }
 
 void test_cam_process_key_event(void) {
-    app_hlpr_t app = {0};
-    entity_t player = {0};
+    app_hlpr_t *app = app_create();
     SDL_KeyboardEvent event;
+
+    RE_init_grid(&app->grid, 10, 10, 0, 0, 0);
     
-    
-    app.cam.x = 5;
-    app.cam.y = 5;
+    app->cam.x = 5;
+    app->cam.y = 5;
     
     
     event.key = SDLK_UP;
-    cam_process_key_event(event, &app, &player, SDL_EVENT_KEY_DOWN);
-    TEST_ASSERT_EQUAL(4, app.cam.x);
-    TEST_ASSERT_EQUAL(4, app.cam.y);
+    cam_process_key_event(event, app, SDL_EVENT_KEY_DOWN);
+    TEST_ASSERT_EQUAL(4, app->cam.x);
+    TEST_ASSERT_EQUAL(4, app->cam.y);
     
     
-    app.cam.x = 0;
-    app.cam.y = 0;
+    app->cam.x = 0;
+    app->cam.y = 0;
     event.key = SDLK_LEFT;
-    cam_process_key_event(event, &app, &player, SDL_EVENT_KEY_DOWN);
-    TEST_ASSERT_EQUAL(0, app.cam.x); 
+    cam_process_key_event(event, app, SDL_EVENT_KEY_DOWN);
+    TEST_ASSERT_EQUAL(0, app->cam.x); 
+
+    app_destroy(app);
 }
 
-void test_act_entity_boundaries(void) {
-    app_hlpr_t app = {0};
-    entity_t ent = {0};
-    
-    
-    app.grid.tile_num_x = 10;
-    app.grid.tile_num_y = 10;
-    app.entities = &ent;
-    app.player_ent_id = 0;
-    
-    
-    ent.x = -1;
-    ent.y = 11;
-    ent.beh = PLAYER;
-    
-    act_entity(&app, &ent);
-    TEST_ASSERT_EQUAL(0, ent.x);
-    TEST_ASSERT_EQUAL(9, ent.y); 
+void test_cam_process_key_event_boundary(void) {
+    app_hlpr_t *app = app_create();
+    SDL_KeyboardEvent event;
+    RE_init_grid(&app->grid, 10, 10, 0, 0, 0);
+
+    app->cam.x = 0;
+    app->cam.y = 0;
+
+    event.key = SDLK_UP;
+    cam_process_key_event(event, app, SDL_EVENT_KEY_DOWN);
+    TEST_ASSERT_EQUAL(0, app->cam.x);
+    TEST_ASSERT_EQUAL(0, app->cam.y);
+
+    app_destroy(app);
 }
 
 void test_get_depth(void) {
@@ -74,6 +72,9 @@ void test_RE_init_grid(void) {
     TEST_ASSERT_EQUAL(0, result);
     TEST_ASSERT_EQUAL(5, grid.tile_num_x);
     TEST_ASSERT_EQUAL(5, grid.tile_num_y);
+    TEST_ASSERT_EQUAL(32, grid.tile_width);
+    TEST_ASSERT_EQUAL(32, grid.tile_height);
+    TEST_ASSERT_EQUAL(0, grid.pad_y);
 
     destroy_grid(&grid);
 }
@@ -86,7 +87,7 @@ void test_RE_init_grid_null_pointer(void) {
 void run_app_tests(void) {
     RUN_TEST(test_app_create_destroy);
     RUN_TEST(test_cam_process_key_event);
-    RUN_TEST(test_act_entity_boundaries);
+    RUN_TEST(test_cam_process_key_event_boundary);
     RUN_TEST(test_get_depth);
     RUN_TEST(test_RE_init_grid);
     RUN_TEST(test_RE_init_grid_null_pointer);
