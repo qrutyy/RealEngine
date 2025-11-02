@@ -59,6 +59,8 @@ void render_asset(SDL_Surface *screen, int sx, int sy, asset_t *asset) {
 				Uint8 sr, sg, sb;
 				const SDL_PixelFormatDetails *sformat = SDL_GetPixelFormatDetails(screen->format);
 
+				SDL_GetRGB(*screen_pxl, sformat, NULL, &sr, &sg, &sb);
+				
                 float norm_aa = aa / 255.0f;
 
                 Uint8 r = MIN(255, sr + ar * norm_aa);
@@ -168,9 +170,7 @@ void render_shadow(SDL_Surface *screen, int sx, int sy, asset_t *asset,
     }
 }
 
-// render background should be way more easy.
-// to do that, need to store full background surface,
-// then extract needed piece
+// TODO: store background statically
 void render_background(app_hlpr_t *app) {
 	SDL_Window *window = app->window;
 	SDL_Surface *screen = SDL_GetWindowSurface(window);
@@ -227,7 +227,6 @@ void render_background(app_hlpr_t *app) {
 					    (Uint32 *)((Uint8 *)screen->pixels + screen_y * screen->pitch + screen_x * bytes_per_pxl);
 					Uint32 *new_pixel =
 					    (Uint32 *)((Uint8 *)image->pixels + tile_y * image->pitch + tile_x * bytes_per_pxl);
-					// *screen_pxl = *new_pixel;
 
 					Uint8 r, g, b, a;
 
