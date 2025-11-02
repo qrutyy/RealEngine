@@ -14,6 +14,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 add_subdirectory(lib/SDL EXCLUDE_FROM_ALL)
 
+file(GLOB TEST_SOURCES "tests/*.c")
+
 file(GLOB APP_SOURCES
     "src/*.c"
     "lib/*.c"
@@ -37,11 +39,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
 if(BUILD_TESTS)
     message(STATUS "Building tests: ON")
-
-    set(TEST_SOURCES
-        "tests/test_runner.c"
-        "tests/tests_app.c"
-    )
 
     if(TEST_SOURCES)
         add_executable(${PROJECT_NAME}_tests 
