@@ -10,8 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static void cam_process_key_event(SDL_KeyboardEvent kb_event, app_hlpr_t *app, entity_t *player_entity,
-                                  uint32_t sdl_kb_event_type) {
+void cam_process_key_event(SDL_KeyboardEvent kb_event, app_hlpr_t *app, uint32_t sdl_kb_event_type) {
 	if (sdl_kb_event_type != SDL_EVENT_KEY_DOWN)
 		return;
 
@@ -51,7 +50,7 @@ static void cam_process_key_event(SDL_KeyboardEvent kb_event, app_hlpr_t *app, e
 		cam->y = max_y;
 }
 
-static void process_input(app_hlpr_t *app) {
+void process_input(app_hlpr_t *app) {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		if (event.type == SDL_EVENT_QUIT) {
@@ -63,7 +62,7 @@ static void process_input(app_hlpr_t *app) {
 		if (event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_KEY_UP) {
 			if (event.key.key <= SDLK_UP && event.key.key >= SDLK_RIGHT) {
 				app->key_event = event.key;
-				cam_process_key_event(app->key_event, app, &app->entities[app->player_ent_id], event.type);
+				cam_process_key_event(app->key_event, app, event.type);
 			}
 		}
 	}
@@ -87,7 +86,7 @@ app_hlpr_t *app_create(void) {
 		goto err_ex;
 	}
 
-	app->is_running = true;
+	app->is_running = false;
 	return app;
 
 err_ex:
@@ -95,7 +94,7 @@ err_ex:
 	return NULL;
 }
 
-static void destroy_grid(grid_t *grid) {
+void destroy_grid(grid_t *grid) {
 	if (!grid) {
 		log_debug("Grid pointer is NULL.\n");
 		return;
@@ -119,7 +118,7 @@ static void destroy_grid(grid_t *grid) {
 	log_debug("Destroyed grid.\n");
 }
 
-static void destroy_layers(layer_entities_t *layers, int layers_num) {
+void destroy_layers(layer_entities_t *layers, int layers_num) {
 	for (int l = 0; l < layers_num; l++) {
 		if (&layers[l] && layers[l].entities) {
 			free(layers[l].entities);
@@ -201,9 +200,9 @@ void act_entity(app_hlpr_t *app, entity_t *ent) {
 
 }
 
-static inline int get_depth(entity_t *entity) { return entity->x + entity->y + 1; }
+inline int get_depth(entity_t *entity) { return entity->x + entity->y + 1; }
 
-static void update_state(app_hlpr_t *app) {
+void update_state(app_hlpr_t *app) {
 	SDL_Window *window = app->window;
 	SDL_Surface *screen = SDL_GetWindowSurface(window);
 
@@ -247,15 +246,17 @@ static void update_state(app_hlpr_t *app) {
 }
 
 void app_run(app_hlpr_t *app) {
+	app->is_running = true;
 	while (app->is_running) {
 		process_input(app);
 		update_state(app);
 		render_scene(app);
 		// SDL_Delay(16);
 	}
+	app->is_running = false;
 }
 
-static int init_layers(app_hlpr_t *app) {
+int init_layers(app_hlpr_t *app) {
 	int max_layers_num = app->grid.tile_num_x + app->grid.tile_num_y + 1;
 
 	layer_entities_t *layers = malloc(sizeof(layer_entities_t) * max_layers_num);
@@ -295,13 +296,13 @@ static int init_layers(app_hlpr_t *app) {
 	return 0;
 }
 
-static void add_entities(app_hlpr_t *app) {
+void add_entities(app_hlpr_t *app) {
 	app->entities = get_entities();
 	app->entities_num = get_entities_num();
 	init_layers(app);
 }
 
-static int setup_player(app_hlpr_t *app) {
+int setup_player(app_hlpr_t *app) {
 	for (int i = 0; i < app->entities_num; i++) {
 		entity_t ent = app->entities[i];
 		if (ent.beh == PLAYER) {

@@ -35,4 +35,15 @@ void app_destroy(app_hlpr_t* app);
 void app_run(app_hlpr_t* app);
 int app_setup(app_hlpr_t *app);
 
+void cam_process_key_event(SDL_KeyboardEvent kb_event, app_hlpr_t *app, uint32_t sdl_kb_event_type);
+void process_input(app_hlpr_t *app);
+void destroy_grid(grid_t *grid);
+void destroy_layers(layer_entities_t *layers, int layers_num);
+int get_depth(entity_t *entity);
+void act_entity(app_hlpr_t *app, entity_t *ent);
+void update_state(app_hlpr_t *app);
+int init_layers(app_hlpr_t *app);
+void add_entities(app_hlpr_t *app);
+int setup_player(app_hlpr_t *app);
+
 #endif // APP_H
