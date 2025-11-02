@@ -1,15 +1,15 @@
 #ifndef ASSET_H
 #define ASSET_H
 
-#include <SDL3/SDL.h>
 #include "types.h"
+#include <SDL3/SDL.h>
 
 #define MAX_ASSETS_NUM 1000
 
 typedef struct asset {
-    SDL_Surface *img;
-    int width;
-    int height;
+	SDL_Surface *img;
+	int width;
+	int height;
 } asset_t;
 
 /*
@@ -60,8 +60,6 @@ int RE_assign_asset_static(grid_t *grid, int id, int layer, int x, int y);
 
     @returns 0 on success, error code otherwise.
 */
-int RE_init_grid(grid_t *grid, int tile_num_x, int tile_num_y, int tile_width, int tile_height,
-        int pad_y);
-
+int RE_init_grid(grid_t *grid, int tile_num_x, int tile_num_y, int tile_width, int tile_height, int pad_y);
 
 #endif // ASSET_H

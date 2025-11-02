@@ -9,9 +9,9 @@
     A structure representing animations of an entity.
 */
 typedef struct animation {
-    asset_t *assets;
-    int assets_num;
-    int curr_asset;
+	asset_t *assets;
+	int assets_num;
+	int curr_asset;
 } animation_t;
 
 /*
@@ -27,7 +27,7 @@ int RE_create_animation(int *assets_ids, int assets_num);
 /*
     TODO a way to be able to choose different animations.
     For now, only first four animations can be used.
-    0 is south, 1 - west, 2 - north, 3 - east. 
+    0 is south, 1 - west, 2 - north, 3 - east.
 
     Add an animation to an entity.
 
