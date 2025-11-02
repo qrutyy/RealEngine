@@ -228,8 +228,8 @@ void render_entities(app_hlpr_t *app) {
 			int cam_y = app->cam.y;
 			int x = ent.x;
 			int y = ent.y;
-			int grid_x = x - cam_x;
-			int grid_y = y - cam_y;
+			int grid_x = x - cam_x - 1;
+			int grid_y = y - cam_y - 1;
 
 			int sx = (grid_x - grid_y) * (TILE_WIDTH / 2) + WINDOW_WIDTH / 2 - asset_w / 2;
 			int sy = (grid_x + grid_y) * (TILE_HEIGHT / 2 - pad) + WINDOW_HEIGHT / 2 - asset_h / 2;
