@@ -73,61 +73,6 @@ void render_asset(SDL_Surface *screen, int sx, int sy, asset_t *asset) {
     }
 }
 
-// void render_shadow(SDL_Surface *screen, int sx, int sy, asset_t *asset) {
-//     if (!screen) {
-//         log_debug("Given null screen, I give up.");
-//         return;
-//     }
-//     if (!asset) {
-//         log_debug("Given null asset, I give up.");
-//         return;
-//     }
-
-//     int asset_w = asset->width;
-//     int asset_h = asset->height;
-
-//     if (asset_w < 0) {
-//         log_debug("Given negative width %d, I give up.", asset_w);
-//         return;
-//     }
-//     if (asset_h < 0) {
-//         log_debug("Given negative height %d, I give up.", asset_h);
-//         return;
-//     }
-
-//     int sh_dir_x = 1;
-//     int sh_dir_y = 0.5;
-//     int sh_scale = 0.5;
-
-//     int bytes_per_pxl = (screen->pitch / screen->w);
-
-//     for (int dx = 0; dx < asset_w; dx++) {
-//         for (int dy = 0; dy < asset_h; dy++) {
-//             SDL_Surface *img = asset->img;
-
-//             Uint32 *pxl = (Uint32*) ((Uint8 *) img->pixels + dy * img->pitch + dx * bytes_per_pxl);
-//             Uint8 r, g, b, a;
-
-//             const SDL_PixelFormatDetails *aformat = SDL_GetPixelFormatDetails(asset->img->format);
-//             SDL_GetRGBA(*pxl, aformat, NULL, &r, &g, &b, &a);
-
-//             if (a == 0) continue;
-
-//             r = 0;
-//             g = 0;
-//             b = 0;
-
-//             int height_scale = (asset_h - dy) * sh_scale;
-//             int screen_x = sx + dx + (sh_dir_x * height_scale);
-//             int screen_y = sy + dy + (sh_dir_y * height_scale);
-
-//             Uint32 *const screen_pxl = (Uint32*) ((Uint8 *) screen->pixels + screen_y * screen->pitch + screen_x * bytes_per_pxl);
-//             const SDL_PixelFormatDetails *sformat = SDL_GetPixelFormatDetails(screen->format);
-//             *screen_pxl = SDL_MapRGB(sformat, NULL, r, g, b);
-//         }
-//     }
-// }
-
 void render_shadow(SDL_Surface *screen, int sx, int sy, asset_t *asset,
         float li_dir_x, float li_dir_y, float sh_scale) {
 
