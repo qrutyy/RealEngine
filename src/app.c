@@ -96,12 +96,12 @@ err_ex:
 
 void destroy_grid(grid_t *grid) {
 	if (!grid) {
-		log_debug("Grid pointer is NULL.\n");
+		// log_debug("Grid pointer is NULL.\n");
 		return;
 	}
 
 	if (!grid->tiles) {
-		log_debug("Tiles pointer is NULL.\n");
+		// log_debug("Tiles pointer is NULL.\n");
 		return;
 	}
 
@@ -115,7 +115,7 @@ void destroy_grid(grid_t *grid) {
 	free(grid->tiles);
 	grid->tiles = NULL;
 
-	log_debug("Destroyed grid.\n");
+	// log_debug("Destroyed grid.\n");
 }
 
 void destroy_layers(layer_entities_t *layers, int layers_num) {
@@ -127,7 +127,7 @@ void destroy_layers(layer_entities_t *layers, int layers_num) {
 
 	free(layers);
 
-	log_debug("Destoyed layers.\n");
+	// log_debug("Destoyed layers.\n");
 }
 
 void app_destroy(app_hlpr_t *app) {
@@ -261,7 +261,7 @@ int init_layers(app_hlpr_t *app) {
 
 	layer_entities_t *layers = malloc(sizeof(layer_entities_t) * max_layers_num);
 	if (!layers) {
-		log_debug("Failed to init layers\n");
+		// log_debug("Failed to init layers\n");
 		return ERR_NOMEM;
 	}
 
@@ -291,7 +291,7 @@ int init_layers(app_hlpr_t *app) {
 
 	app->lentities = layers;
 	app->layers_num = max_layers_num;
-	// log_debug("initialized %d layers.", max_layers_num);
+	log_debug("initialized %d layers.", max_layers_num);
 
 	return 0;
 }
