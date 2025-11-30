@@ -14,6 +14,7 @@ enum e_behaviour {
 	PLAYER = 0,
 	NPC = 1,
 	FOLLOW = 2,
+	STAND = 3,
 	// these should be more precise, to be added
 };
 
