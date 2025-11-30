@@ -63,6 +63,20 @@ int RE_add_entity(int x, int y, enum e_behaviour beh);
 	@returns 0 if entity was deleted, -1 otherwise.
 */
 int RE_delete_entity(int id);
+
+
+/*
+    Move entity by id.
+
+    @param id id of entity to be deleted.
+	Note that player entity cannot be moved.
+	@param x x of pile to move to.
+	@param y y of pile to move to.
+
+	@returns 0 if entity was moved, -1 otherwise.
+*/
+int RE_move_entity(int id, int x, int y);
+
 entity_t *get_entities(void);
 int get_entities_num(void);
 void reset_entities(void);

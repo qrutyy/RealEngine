@@ -61,6 +61,33 @@ int RE_delete_entity(int id) {
 	return 0;
 }
 
+int RE_move_entity(int id, int x, int y) {
+	if (id < 0 || id > MAX_ENTITIES_NUM) {
+		log_error("Failed to move entity: id should be in range [0, %d].\n", MAX_ENTITIES_NUM);
+		return -1;
+	}
+
+	if (id >= curr_entities_num) {
+		log_error("Failed to move entity: no entity with id %d exists.\n", id);
+		return -1;
+	}
+
+	if (entities[id].beh == DELETED) {
+		log_error("Failed to move entity: entity with id %d was deleted.\n", id);
+		return -1;
+	}
+
+	if (id == 0) {
+		log_error("Failed to move entity: cannot move player entity.\n", id);
+		return -1;
+	}
+
+	entities[id].x = x;
+	entities[id].y = y;
+
+	return 0;
+}
+
 entity_t *get_entities(void) { return (entity_t *)&entities; }
 
 int get_entities_num(void) { return curr_entities_num; }
