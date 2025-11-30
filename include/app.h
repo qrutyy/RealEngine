@@ -32,6 +32,7 @@ typedef struct app_hlpr {
 	char *lose_screen_path;
 	bool show_win_screen;
 	bool show_lose_screen;
+	long long global_time;
 } app_hlpr_t;
 
 app_hlpr_t *app_create(void);
