@@ -15,5 +15,7 @@
 
 void render_draw_grid(app_hlpr_t *app);
 void render_scene(app_hlpr_t *app);
+void show_image(app_hlpr_t *app, SDL_Surface *img);
+void show_image_by_path(app_hlpr_t *app, const char *path);
 
 #endif // RENDERER_H

@@ -87,6 +87,8 @@ app_hlpr_t *app_create(void) {
 	}
 
 	app->is_running = false;
+	app->show_win_screen = false;
+	app->show_lose_screen = false;
 	return app;
 
 err_ex:
@@ -205,7 +207,7 @@ void act_entity(app_hlpr_t *app, entity_t *ent) {
 
 inline int get_depth(entity_t *entity) { return entity->x + entity->y + 1; }
 
-void update_state(app_hlpr_t *app) {
+void update_state(app_hlpr_t *app, int (check_condition_fun)()) {
 	SDL_Window *window = app->window;
 	SDL_Surface *screen = SDL_GetWindowSurface(window);
 
@@ -246,17 +248,35 @@ void update_state(app_hlpr_t *app) {
 
 	// shadows, etc
 	// for ()
+
+	int cond = check_condition_fun();
+	if (cond == 0) {
+		app->show_win_screen = true;
+		app->show_lose_screen = false;
+	} else if (cond == 1) {
+		app->show_win_screen = false;
+		app->show_lose_screen = true;
+	}
 }
 
-void app_run(app_hlpr_t *app) {
+void app_run(app_hlpr_t *app, int (*check_condition_fun)()) {
 	app->is_running = true;
-	while (app->is_running) {
+	while (app->is_running && !app->show_lose_screen && !app->show_win_screen) {
 		process_input(app);
-		update_state(app);
+		update_state(app, check_condition_fun);
 		render_scene(app);
 		// SDL_Delay(16);
 	}
-	app->is_running = false;
+	if (!app->show_lose_screen && !app->show_win_screen) {
+		return;
+	}
+
+	app->is_running = true;
+	while (app->is_running) {
+		process_input(app);
+		char *path = app->show_win_screen ? app->win_screen_path : app->lose_screen_path; 
+		show_image_by_path(app, path);
+	}
 }
 
 int init_layers(app_hlpr_t *app) {

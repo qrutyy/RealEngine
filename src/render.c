@@ -256,3 +256,16 @@ void render_scene(app_hlpr_t *app) {
 	render_entities(app);
 	SDL_UpdateWindowSurface(app->window);
 }
+
+void show_image(app_hlpr_t *app, SDL_Surface *img) {
+	SDL_Window *window = app->window;
+	SDL_Surface *screen = SDL_GetWindowSurface(window);
+	SDL_Rect rect_dest = {0, 0, img->w, img->h};
+	SDL_BlitSurface(img, NULL, screen, &rect_dest);
+	SDL_UpdateWindowSurface(window);
+}
+
+void show_image_by_path(app_hlpr_t *app, const char *path) {
+	SDL_Surface *img = SDL_LoadPNG(path);
+	show_image(app, img);
+}
