@@ -22,6 +22,8 @@ static enum e_behaviour get_entity_type_from_str(const char *str_name) {
 		return NPC;
 	if (!strcmp(str_name, "FOLLOW"))
 		return FOLLOW;
+	if (!strcmp(str_name, "STAND"))
+		return STAND;
 	return -1;
 }
 
