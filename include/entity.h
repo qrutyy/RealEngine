@@ -43,7 +43,13 @@ typedef struct layer_entities {
 } layer_entities_t;
 
 /*
-    Add entity on given coordinate with given behaviour.
+    Add entity on given grid coordinate with given behaviour.
+
+	@param x x of pile to add to.
+	@param y y of pile to add to.
+	@param beh behaviour of the entity.
+
+	@returns id of created entity on success, -1 otherwise.
 */
 int RE_add_entity(int x, int y, enum e_behaviour beh);
 
