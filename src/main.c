@@ -28,6 +28,7 @@ int main(int argc, char *argv[]) {
 		return err;
 	}
 
+
 	app_run(app);
 
 	app_destroy(app);

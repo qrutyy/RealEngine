@@ -42,15 +42,8 @@ void render_asset(SDL_Surface *screen, int sx, int sy, asset_t *asset) {
 
 			SDL_Surface *img = asset->img;
 
-<<<<<<< HEAD
-			Uint32 *const screen_pxl =
-			    (Uint32 *)((Uint8 *)screen->pixels + screen_y * screen->pitch + screen_x * bytes_per_pxl);
-			Uint32 *asset_pxl = (Uint32 *)((Uint8 *)img->pixels + y * img->pitch + x * bytes_per_pxl);
-			// *screen_pxl = *new_pixel;
-=======
             Uint32 *const screen_pxl = (Uint32*) ((Uint8 *) screen->pixels + screen_y * screen->pitch + screen_x * bytes_per_pxl);
             Uint32 *asset_pxl = (Uint32*) ((Uint8 *) img->pixels + y * img->pitch + x * bytes_per_pxl);
->>>>>>> bb05866 (fix: draw only entities that are inside camera)
 
 			Uint8 ar, ag, ab, aa;
 
@@ -213,6 +206,8 @@ void render_entities(app_hlpr_t *app) {
 
 			entity_t ent = layers[l].entities[i];
 
+			if (ent.beh == DELETED) continue;
+
 			asset_t *asset = RE_get_asset(2);
 			if (!asset) {
 				continue;
@@ -246,12 +241,6 @@ void render_entities(app_hlpr_t *app) {
 			int shadow_sx = sx;
 			int shadow_sy = sy;
 
-<<<<<<< HEAD
-			render_shadow(screen, shadow_sx, shadow_sy, asset, li_dir_x, li_dir_y, sh_scale);
-			render_asset(screen, sx, sy, asset);
-		}
-	}
-=======
 			if (sx < 0 || sx > WINDOW_WIDTH || sy < 0 || sy > WINDOW_HEIGHT) {
 				continue;
 			}
@@ -260,7 +249,6 @@ void render_entities(app_hlpr_t *app) {
             render_asset(screen, sx, sy, asset);
         }
     }
->>>>>>> bb05866 (fix: draw only entities that are inside camera)
 }
 
 void render_scene(app_hlpr_t *app) {

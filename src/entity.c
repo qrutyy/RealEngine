@@ -38,6 +38,29 @@ int RE_add_entity(int x, int y, enum e_behaviour beh) {
 	return id;
 }
 
+int RE_delete_entity(int id) {
+	if (id < 0 || id > MAX_ENTITIES_NUM) {
+		log_error("Failed to delete entity: id should be in range [0, %d].\n", MAX_ENTITIES_NUM);
+		return -1;
+	}
+
+	if (id >= curr_entities_num) {
+		log_error("Failed to delete entity: no entity with id %d exists.\n", id);
+		return -1;
+	}
+
+	if (entities[id].beh == DELETED) {
+		log_warn("Entity with id %d was already deleted.\n", id);
+	} else if (entities[id].beh == PLAYER) {
+		log_error("Failed to delete entity: cannot delete player entity.\n");
+		return -1;
+	}
+
+	entities[id].beh = DELETED;
+
+	return 0;
+}
+
 entity_t *get_entities(void) { return (entity_t *)&entities; }
 
 int get_entities_num(void) { return curr_entities_num; }
