@@ -5,6 +5,29 @@
 #include "scene.h"
 #include <stdlib.h>
 
+int counter = 0;
+
+int example_cond_fun(void) {
+	struct entity* entities = get_entities();
+	int entities_num = get_entities_num();
+
+	int id1 = 0;
+	int id2 = 1;
+	int id3 = 2;
+
+	if (entities[id1].x == entities[id2].x && entities[id1].y == entities[id2].y) {
+		return 1; // lose condition
+	}
+	if (entities[id1].x == entities[id3].x && entities[id1].y == entities[id3].y) {
+		counter++;
+	}
+	if (counter == 5) {
+		return 0; // win condition
+	}
+
+	return -1; // any other value is ignored
+}
+
 int main(int argc, char *argv[]) {
 	(void)argc;
 	(void)argv;
@@ -28,7 +51,10 @@ int main(int argc, char *argv[]) {
 		return err;
 	}
 
-	app_run(app);
+	app->win_screen_path = "/home/spisladqo/Downloads/spongebob.png";
+	app->lose_screen_path = "/home/spisladqo/Downloads/spongebob_youlost.png";
+
+	app_run(app, example_cond_fun);
 
 	app_destroy(app);
 

@@ -87,6 +87,9 @@ app_hlpr_t *app_create(void) {
 	}
 
 	app->is_running = false;
+	app->show_win_screen = false;
+	app->show_lose_screen = false;
+	app->global_time = 0;
 	return app;
 
 err_ex:
@@ -141,6 +144,7 @@ void app_destroy(app_hlpr_t *app) {
 }
 
 void act_entity(app_hlpr_t *app, entity_t *ent) {
+	static unsigned long long last_moved_time = 0;
 	entity_t player = app->entities[app->player_ent_id];
 	if (!ent)
 		return;
@@ -188,6 +192,20 @@ void act_entity(app_hlpr_t *app, entity_t *ent) {
 			ent->y--;
 		}
 		// log_debug("follow entity is on %d, %d", ent->x, ent->y);
+	} else if (ent->beh = CUSTOM) {
+		if (app->global_time - last_moved_time > 6) {
+			if (player.x > ent->x) {
+				ent->x++;
+			} else if (ent->x > player.x) {
+				ent->x--;
+			}
+			if (player.y > ent->y) {
+				ent->y++;
+			} else if (ent->y > player.y) {
+				ent->y--;
+			}
+			last_moved_time = app->global_time;
+		}
 	}
 
 	int max_x = app->grid.tile_num_x - 1;
@@ -205,7 +223,7 @@ void act_entity(app_hlpr_t *app, entity_t *ent) {
 
 inline int get_depth(entity_t *entity) { return entity->x + entity->y + 1; }
 
-void update_state(app_hlpr_t *app) {
+void update_state(app_hlpr_t *app, int (check_condition_fun)()) {
 	SDL_Window *window = app->window;
 	SDL_Surface *screen = SDL_GetWindowSurface(window);
 
@@ -246,17 +264,36 @@ void update_state(app_hlpr_t *app) {
 
 	// shadows, etc
 	// for ()
+
+	int cond = check_condition_fun();
+	if (cond == 0) {
+		app->show_win_screen = true;
+		app->show_lose_screen = false;
+	} else if (cond == 1) {
+		app->show_win_screen = false;
+		app->show_lose_screen = true;
+	}
 }
 
-void app_run(app_hlpr_t *app) {
+void app_run(app_hlpr_t *app, int (*check_condition_fun)()) {
+	app->is_running = true;
+	while (app->is_running && !app->show_lose_screen && !app->show_win_screen) {
+		process_input(app);
+		update_state(app, check_condition_fun);
+		render_scene(app);
+		app->global_time++;
+		// SDL_Delay(16);
+	}
+	if (!app->show_lose_screen && !app->show_win_screen) {
+		return;
+	}
+
 	app->is_running = true;
 	while (app->is_running) {
 		process_input(app);
-		update_state(app);
-		render_scene(app);
-		// SDL_Delay(16);
+		char *path = app->show_win_screen ? app->win_screen_path : app->lose_screen_path; 
+		show_image_by_path(app, path);
 	}
-	app->is_running = false;
 }
 
 int init_layers(app_hlpr_t *app) {
