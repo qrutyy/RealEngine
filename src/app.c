@@ -152,11 +152,6 @@ void act_entity(app_hlpr_t *app, entity_t *ent) {
 	if (ent->beh == PLAYER) {
 		ent->x = app->cam.x;
 		ent->y = app->cam.y;
-
-		// if (player_entity->x < 0) player_entity->x = 0;
-		// if (player_entity->y < 0) player_entity->y = 0;
-		// printf("a player acts like a player.\n");
-		// printf("player entity is on x, y: %d, %d\n", ent->x, ent->y);
 	} else if (ent->beh == NPC) {
 		int rand = SDL_rand(4);
 		switch (rand) {
@@ -192,7 +187,7 @@ void act_entity(app_hlpr_t *app, entity_t *ent) {
 			ent->y--;
 		}
 		// log_debug("follow entity is on %d, %d", ent->x, ent->y);
-	} else if (ent->beh = CUSTOM) {
+	} else if (ent->beh == CUSTOM) {
 		if (app->global_time - last_moved_time > 6) {
 			if (player.x > ent->x) {
 				ent->x++;
@@ -206,7 +201,10 @@ void act_entity(app_hlpr_t *app, entity_t *ent) {
 			}
 			last_moved_time = app->global_time;
 		}
+	} else if (ent->beh == STAND) {
+		return;
 	}
+
 
 	int max_x = app->grid.tile_num_x - 1;
 	int max_y = app->grid.tile_num_y - 1;
