@@ -49,7 +49,11 @@ void assign_layers(grid_t *grid, map_layout_cfg_t *config) {
 					curr_entity_cfg = get_entity_with_type(config, shortcut);
 
 					if (curr_entity_cfg) {
-						RE_add_entity(x, y, curr_entity_cfg->type);
+						int id = RE_add_entity(x, y, curr_entity_cfg->type);
+						entity_t* ents = get_entities();
+						ents[id].asset_id = curr_entity_cfg->asset_id;
+						// printf("CURR_ENTITY_CFG->ASSET_ID: %d\n", curr_entity_cfg->asset_id);
+						
 						parsed_entity_count++;
 					}
 				}
@@ -74,6 +78,7 @@ int load_cfg(grid_t *grid, map_layout_cfg_t *config) {
 		curr_asset_cfg->engine_asset_key =
 		    RE_load_asset(curr_asset_cfg->filename, curr_asset_cfg->pos_x, curr_asset_cfg->pos_y, curr_asset_cfg->dim_w,
 		                  curr_asset_cfg->dim_h);
+			// printf("loaded asset %s\n",curr_asset_cfg->filename );
 	}
 
 	assign_layers(grid, config);
